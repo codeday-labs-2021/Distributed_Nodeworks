@@ -16,6 +16,10 @@ myvenv
 # production
 /build
 
+# python
+__pycache__
+*.pyc
+
 # misc
 .DS_Store
 .env.local
