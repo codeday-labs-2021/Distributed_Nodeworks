@@ -4,7 +4,12 @@
 /node_modules
 /.pnp
 .pnp.js
+
+# virtual environment
 venv
+myvenv
+.flaskenv
+
 # testing
 /coverage
 
