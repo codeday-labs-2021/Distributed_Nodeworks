@@ -30,6 +30,9 @@ mock_data = [
     }
 ]
 
-for i in range(len(mock_data)):
-    response = requests.get(BASE + "register/" + str(i + 1), json=mock_data[i])
-    # print(response)
+# for i in range(len(mock_data)):
+    # response = requests.post(BASE + "register/" + str(i + 1), json=mock_data[i]) (this is post request)
+
+# this is GET request
+response = requests.get(BASE + "register/" + "2")
+print(response.json())

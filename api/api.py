@@ -1,9 +1,11 @@
 import time
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
+from flask_marshmallow import Marshmallow
+from marshmallow import Schema
 
 app = Flask(__name__)
+ma = Marshmallow(app)
 
 # getting unique user key for security, will improve later
 app.config['SECRET_KEY'] = 'ufhkjkbfieihf7398738'
@@ -12,7 +14,7 @@ app.config['SECRET_KEY'] = 'ufhkjkbfieihf7398738'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
 
-# data model
+# data model and serialization (helps convert to json)
 class UserModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
@@ -23,13 +25,19 @@ class UserModel(db.Model):
     def __repr__(self):
         return f"User(username: {self.username}, password: {self.password}, email: {self.email})"
 
+class UserSchema(ma.Schema):
+    class Meta:
+        fields = ("id", "username", "email", "password", "role")
+
+user_schema = UserSchema()
+
 # create data table
 @app.before_first_request
 def create_tables():
     db.create_all()
 
 # create calls
-@app.route('/api/v1/register/<id>', methods=['POST'])
+@app.route('/api/v1/register/<id>', methods=['POST', 'GET'])
 def register(id):
     if (request.method == 'POST'):
         user_data = request.get_json(force=True)
@@ -49,9 +57,15 @@ def register(id):
             The role is: {}
         '''.format(username, email, password, role), 201
 
+    if (request.method == 'GET'):
+        user = UserModel.query.get(id)
+        return user_schema.jsonify(user)
+
 # how I view the data table:
 # enter virtual environment 
 # >>> python
 # >>> from api import UserModel
 # >>> UserModel.query.all()
 
+if __name__ == '__main__':
+    app.run()
