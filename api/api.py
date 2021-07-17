@@ -66,6 +66,8 @@ def register(id):
 # >>> python
 # >>> from api import UserModel
 # >>> UserModel.query.all()
+# or
+# go to Postman and send the api request from there
 
 if __name__ == '__main__':
     app.run()
