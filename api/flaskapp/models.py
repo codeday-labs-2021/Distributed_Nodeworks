@@ -2,15 +2,18 @@
 # data model and serialization (helps convert to json)
 from flaskapp import ma, db, login_manager
 from flask import abort
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.postgresql import UUID
 from marshmallow import Schema # for serializing the object into JSON data 
 from flask_login import UserMixin # to represent a User class with important attributes like isActive, isLoggedin, isAnonymous, etc
+import uuid
 
 @login_manager.user_loader
 def load_user(user_id):
     return UserModel.query.get(int(user_id))
 
 class UserModel(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False) # hashed password
@@ -24,3 +27,4 @@ class UserSchema(ma.Schema):
         fields = ("id", "username", "email", "password", "role")
 
 user_schema = UserSchema()
+users_schema = UserSchema(many=True)

@@ -1,11 +1,13 @@
-from flaskapp import app, db, bcrypt
 from flask import request, jsonify, abort, redirect, url_for
-from flaskapp.models import UserModel, user_schema
+from flaskapp import app, db, bcrypt
+from flaskapp.models import UserModel, user_schema, users_schema
 from flask_login import login_user, current_user, logout_user
+import uuid
+import random
 
 # create calls
-@app.route('/api/v1/register/<id>', methods=['POST', 'GET'])
-def register(id):
+@app.route('/api/v1/register', methods=['POST'])
+def register():
     if current_user.is_authenticated:
         # return redirect(url_for('home')) # theres no home yet
         pass
@@ -31,16 +33,15 @@ def register(id):
         if search_user_by_email:
             abort(409, description="This email is already used")
         
+        # assign random unique id
+        id = random.randint(1, 100000)   
+
         # add the user
         new_user = UserModel(id=id, username=username, email=email, password=hashed_password, role=role)
         db.session.add(new_user)
         db.session.commit()
 
         return 'user created successfully', 201
-
-    if (request.method == 'GET'):
-        user = UserModel.query.get(id)
-        return user_schema.jsonify(user)
 
 
 @app.route('/api/v1/login', methods=['POST'])
@@ -72,3 +73,22 @@ def login():
 def logout():
     logout_user()
     return 'Logout successfully', 200
+
+
+@app.route('/api/v1/getuser/<id>', methods=['GET'])
+def get_user(id):
+    user = UserModel.query.get(id)
+    return user_schema.jsonify(user)
+
+
+@app.route('/api/v1/getallusers')
+def get_all_users():
+    users = UserModel.query.all()
+    return users_schema.jsonify(users)
+
+
+@app.route('/api/v1/delete')
+def delete():
+    UserModel.query.delete()
+    db.session.commit()
+    return 'Delete', 200
