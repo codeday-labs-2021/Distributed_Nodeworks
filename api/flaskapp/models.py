@@ -6,7 +6,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import UUID
 from marshmallow import Schema # for serializing the object into JSON data 
 from flask_login import UserMixin # to represent a User class with important attributes like isActive, isLoggedin, isAnonymous, etc
-import uuid
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -14,6 +13,7 @@ def load_user(user_id):
 
 class UserModel(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
+    user_key = db.Column(db.String(32), unique=True, nullable=False)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False) # hashed password
@@ -24,7 +24,13 @@ class UserModel(db.Model, UserMixin):
 
 class UserSchema(ma.Schema):
     class Meta:
-        fields = ("id", "username", "email", "password", "role")
+        fields = ("id", "user_key", "username", "email", "password", "role")
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
+
+
+class WorkFlowModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    owner = db.Column(db.String(32), nullable=False)
+

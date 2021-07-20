@@ -1,6 +1,7 @@
 # testing the server
 import requests
 import json
+import uuid
 
 BASE = "http://localhost:5000/api/v1/"
 
@@ -47,8 +48,10 @@ mock_data = [
 
 # for i in range(len(mock_data)):
     # response = requests.post(BASE + "register/" + str(i + 1), json=mock_data[i]) (this is post request)
-post = requests.post(BASE + "register/", json=mock_data[5])
+# post = requests.post(BASE + "register/", json=mock_data[5])
 
-# this is GET request
-response = requests.get(BASE + "register/" + "5")
-print(response.json())
+# # this is GET request
+# response = requests.get(BASE + "register/" + "5")
+# print(response.json())
+
+print(type(uuid.uuid4().hex))

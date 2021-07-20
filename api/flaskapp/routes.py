@@ -32,12 +32,12 @@ def register():
         search_user_by_email = UserModel.query.filter_by(email=email).first()
         if search_user_by_email:
             abort(409, description="This email is already used")
-        
+
         # assign random unique id
-        id = random.randint(1, 100000)   
+        user_key = uuid.uuid4().hex
 
         # add the user
-        new_user = UserModel(id=id, username=username, email=email, password=hashed_password, role=role)
+        new_user = UserModel(user_key=user_key, username=username, email=email, password=hashed_password, role=role)
         db.session.add(new_user)
         db.session.commit()
 
@@ -75,9 +75,9 @@ def logout():
     return 'Logout successfully', 200
 
 
-@app.route('/api/v1/getuser/<id>', methods=['GET'])
-def get_user(id):
-    user = UserModel.query.get(id)
+@app.route('/api/v1/getuser/<key>', methods=['GET'])
+def get_user(key):
+    user = UserModel.query.filter_by(user_key=key).first()
     return user_schema.jsonify(user)
 
 
@@ -87,7 +87,7 @@ def get_all_users():
     return users_schema.jsonify(users)
 
 
-@app.route('/api/v1/delete')
+@app.route('/api/v1/deleteall')
 def delete():
     UserModel.query.delete()
     db.session.commit()
