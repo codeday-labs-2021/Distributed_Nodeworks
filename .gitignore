@@ -9,6 +9,7 @@
 venv
 myvenv
 .flaskenv
+.vscode
 
 # testing
 /coverage
