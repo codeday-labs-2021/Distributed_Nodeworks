@@ -70,8 +70,7 @@ int main()
         {} // from some other node to this node
     };
 
-    independent_nodes.push_back(&n5);
-    independent_nodes.push_back(&n4);
+    independent_nodes.insert(independent_nodes.end(), {&n5, &n4});
 
     while (!independent_nodes.empty()){
         cout << "chose new independent node" << endl;
