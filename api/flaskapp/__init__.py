@@ -15,6 +15,7 @@ app.config['SECRET_KEY'] = 'ufhkjkbfieihf7398738'
 
 # setting up database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_BINDS'] = {'workflow_db' : 'sqlite:///workflow_database.db'}
 db = SQLAlchemy(app)
 
 # create data table

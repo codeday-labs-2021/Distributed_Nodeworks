@@ -1,11 +1,11 @@
 from flask import request, jsonify, abort, redirect, url_for
 from flaskapp import app, db, bcrypt
-from flaskapp.models import UserModel, user_schema, users_schema
+from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel
 from flask_login import login_user, current_user, logout_user
 import uuid
 import random
 
-# create calls
+# create calls for user database
 @app.route('/api/v1/register', methods=['POST'])
 def register():
     if current_user.is_authenticated:
@@ -32,12 +32,12 @@ def register():
         search_user_by_email = UserModel.query.filter_by(email=email).first()
         if search_user_by_email:
             abort(409, description="This email is already used")
-        
+
         # assign random unique id
-        id = random.randint(1, 100000)   
+        user_key = uuid.uuid4().hex
 
         # add the user
-        new_user = UserModel(id=id, username=username, email=email, password=hashed_password, role=role)
+        new_user = UserModel(user_key=user_key, username=username, email=email, password=hashed_password, role=role)
         db.session.add(new_user)
         db.session.commit()
 
@@ -75,9 +75,9 @@ def logout():
     return 'Logout successfully', 200
 
 
-@app.route('/api/v1/getuser/<id>', methods=['GET'])
-def get_user(id):
-    user = UserModel.query.get(id)
+@app.route('/api/v1/getuser/<key>', methods=['GET'])
+def get_user(key):
+    user = UserModel.query.filter_by(user_key=key).first()
     return user_schema.jsonify(user)
 
 
@@ -87,8 +87,13 @@ def get_all_users():
     return users_schema.jsonify(users)
 
 
-@app.route('/api/v1/delete')
+@app.route('/api/v1/deleteall')
 def delete():
     UserModel.query.delete()
     db.session.commit()
     return 'Delete', 200
+
+# create calls for workflow database
+@app.route('/api/v1/workflow/hello')
+def workflow_hello():
+    return 'hellow, this is workflow database'
