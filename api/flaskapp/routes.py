@@ -1,11 +1,11 @@
 from flask import request, jsonify, abort, redirect, url_for
 from flaskapp import app, db, bcrypt
-from flaskapp.models import UserModel, user_schema, users_schema
+from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel
 from flask_login import login_user, current_user, logout_user
 import uuid
 import random
 
-# create calls
+# create calls for user database
 @app.route('/api/v1/register', methods=['POST'])
 def register():
     if current_user.is_authenticated:
@@ -92,3 +92,8 @@ def delete():
     UserModel.query.delete()
     db.session.commit()
     return 'Delete', 200
+
+# create calls for workflow database
+@app.route('/api/v1/workflow/hello')
+def workflow_hello():
+    return 'hellow, this is workflow database'

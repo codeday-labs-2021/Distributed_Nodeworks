@@ -30,7 +30,12 @@ user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 
 
-class WorkFlowModel(db.Model):
+class WorkflowModel(db.Model):
+    __bind_key__ = 'workflow_db'
     id = db.Column(db.Integer, primary_key=True)
     owner = db.Column(db.String(32), nullable=False)
 
+    def __repr__(self):
+        return f"Workflow(owner: {self.owner})"
+
+db.create_all()
