@@ -4,6 +4,10 @@ Support the development of a distributed workflow (i.e., coordinated execution o
 
 ### Prerequisites
 Familiarity with intermediate to advanced Python, Git, database server concepts and other tools like Flask.
+Npm Install: 
+- npm install react-bootstrap
+- npm install react-flow-renderer
+- npm install react-router-dom
 
 ### Features
 Login, Signup, Homepage Ui
