@@ -34,8 +34,10 @@ class WorkflowModel(db.Model):
     __bind_key__ = 'workflow_db'
     id = db.Column(db.Integer, primary_key=True)
     owner = db.Column(db.String(32), nullable=False)
+    name = db.Column(db.String(32), nullable=False)
+    content = db.Column(db.String)
 
     def __repr__(self):
-        return f"Workflow(owner: {self.owner})"
+        return f"Workflow(name: {self.name}, owner: {self.owner}, data: {self.content})"
 
 db.create_all()
