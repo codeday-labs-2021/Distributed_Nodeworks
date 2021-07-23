@@ -108,7 +108,7 @@ def publish():
         new_file = WorkflowModel(owner="Mr. Owen", name=file.filename, content=file.read())
         db.session.add(new_file)
         db.session.commit()
-        return file.filename + ' is saved.'
+        return file.filename + ' is saved.', 201
     if request.method == 'GET':
         return render_template('upload.html')
 
@@ -117,3 +117,11 @@ def publish():
 def get_workflow(file_id):
     chosen_workflow = WorkflowModel.query.get(file_id)
     return send_file(BytesIO(chosen_workflow.content), as_attachment=True, attachment_filename="download.nc")
+
+
+@app.route('/api/v1/workflow/delete', methods=['GET'])
+def delete_workflow(file_id):
+    chosen_workflow = WorkflowModel.query.get(file_id)
+    db.session.delete(chosen_workflow)
+    db.session.commit()
+    return 'Delete workflow successfully', 200
