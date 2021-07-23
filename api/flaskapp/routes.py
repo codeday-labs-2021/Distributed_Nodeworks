@@ -119,7 +119,7 @@ def get_workflow(file_id):
     return send_file(BytesIO(chosen_workflow.content), as_attachment=True, attachment_filename="download.nc")
 
 
-@app.route('/api/v1/workflow/delete', methods=['GET'])
+@app.route('/api/v1/workflow/delete/<file_id>', methods=['GET'])
 def delete_workflow(file_id):
     chosen_workflow = WorkflowModel.query.get(file_id)
     db.session.delete(chosen_workflow)
