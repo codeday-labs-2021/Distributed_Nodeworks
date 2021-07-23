@@ -5,5 +5,11 @@ Support the development of a distributed workflow (i.e., coordinated execution o
 ### Prerequisites
 Familiarity with intermediate to advanced Python, Git, database server concepts and other tools like Flask.
 
+### Features
+Login, Signup, Homepage Ui
+
+### How to run
+Create a react app, copy src folder into react app, api folder is flask backend so put that into your react folder as well. 
+Start react app, using npm run start, and start flask server as well, using flask run. 
 ### Contributors
 
