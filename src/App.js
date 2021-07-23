@@ -1,33 +1,25 @@
 import React, { useState, useEffect} from 'react';
-import logo from './logo.svg';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import Login from './Pages/Login'
+import Nav from './Component/Nav';
+import {BrowserRouter, Route} from 'react-router-dom'
+import signup from './Pages/Signup';
+import home from './Pages/home';
 
 function App() {
-  const [currentTime, setCurrentTime] = useState(0)
-  
-  useEffect(() =>{
-    fetch('/time').then(res =>res.json()).then(data =>{
-      setCurrentTime(data.time);
-    })
-  },
-  []);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <p>The current time is {currentTime}.</p>
-      </header>
+      <Nav/>
+
+      <main className="form-signin">
+        <BrowserRouter>
+          <Route path ="/signup/" exact component={signup}/>
+          <Route path ="/login/" exact component={Login}/>
+          <Route path="/" exact component={home}/>
+        </BrowserRouter>
+      </main>
+
     </div>
   );
 }
