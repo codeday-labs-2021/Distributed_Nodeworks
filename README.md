@@ -8,7 +8,10 @@ Npm Install:
 - npm install react-bootstrap
 - npm install react-flow-renderer
 - npm install react-router-dom
-
+--For the api--
+pip install flask
+pip install flask-sqlalchemy
+pip install flask-wtf
 ### Features
 Login, Signup, Homepage Ui
 
