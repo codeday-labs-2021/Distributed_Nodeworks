@@ -40,4 +40,10 @@ class WorkflowModel(db.Model):
     def __repr__(self):
         return f"Workflow(name: {self.name}, owner: {self.owner}, data: {self.content})"
 
+class WorkflowSchema(ma.Schema):
+    class Meta:
+        fields = ("id", "owner", "name", "content")
+
+workflow_schema = WorkflowSchema()
+
 db.create_all()

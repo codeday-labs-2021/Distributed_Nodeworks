@@ -27,9 +27,10 @@ class Node:
         return self.name
 
 
-def main():
+def dag_solve(json_object):
     # test:
     # default declaration
+    print(json_object)
     n0 = Node("Undeclared", [], [])
     n1 = Node("Undeclared", [], [])
     n2 = Node("Undeclared", [], [])
@@ -78,6 +79,3 @@ def main():
     print("Result: ")
     for node in sorted_nodes:
         print(node.name)
-
-
-main()

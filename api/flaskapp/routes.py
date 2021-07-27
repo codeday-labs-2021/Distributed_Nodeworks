@@ -1,9 +1,11 @@
 from flask import request, jsonify, abort, redirect, url_for, render_template, send_file
 from flaskapp import app, db, bcrypt
 from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel
+from flaskapp.dag_solver import dag_solver
 from flask_login import login_user, current_user, logout_user
 import uuid
 from io import BytesIO
+import json
 
 # create calls for user database
 @app.route('/api/v1/register', methods=['POST'])
@@ -125,3 +127,11 @@ def delete_workflow(file_id):
     db.session.delete(chosen_workflow)
     db.session.commit()
     return 'Delete workflow successfully', 200
+
+@app.route('/api/v1/workflow/execute/<file_id>')
+def execute_file(file_id):
+    chosen_workflow = WorkflowModel.query.get(file_id)
+    json_content = json.loads(chosen_workflow.content)
+    dag_solver(json_content)
+    return json_content
+
