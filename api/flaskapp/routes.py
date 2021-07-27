@@ -132,6 +132,6 @@ def delete_workflow(file_id):
 def execute_file(file_id):
     chosen_workflow = WorkflowModel.query.get(file_id)
     json_content = json.loads(chosen_workflow.content)
-    dag_solver(json_content)
-    return json_content
+    sorted_order = dag_solver(json_content)
+    return json.dumps(sorted_order)
 

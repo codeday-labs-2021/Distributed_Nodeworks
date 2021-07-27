@@ -1,16 +1,13 @@
+import json
 
+# f = open('node_ex.nc', "r")
+# data = json.loads(f.read())
 
 class Node:
     def __init__(self, name, in_neighbours, out_neighbours):
         self.name = name
         self.out_neighbours = out_neighbours
         self.in_neighbours = in_neighbours
-
-    def is_independent(self, in_neighbours):
-        if (len(in_neighbours) == 0):
-            return True
-        else:
-            return False
 
     def set_in_neighbours(self, *nodes):
         for node in nodes:
@@ -27,55 +24,63 @@ class Node:
         return self.name
 
 
-def dag_solve(json_object):
-    # test:
-    # default declaration
-    print(json_object)
-    n0 = Node("Undeclared", [], [])
-    n1 = Node("Undeclared", [], [])
-    n2 = Node("Undeclared", [], [])
-    n3 = Node("Undeclared", [], [])
-    n4 = Node("Undeclared", [], [])
-    n5 = Node("Undeclared", [], [])
+def dag_solver(json_object):
 
-    n0.set_name("Node 0")
-    n0.set_in_neighbours(n4, n5)
-
-    n1.set_name("Node 1")
-    n1.set_in_neighbours(n4, n3)
-
-    n2.set_name("Node 2")
-    n2.set_in_neighbours(n5)
-    n2.set_out_neighbours(n3)
-
-    n3.set_name("Node 3")
-    n3.set_in_neighbours(n2)
-    n3.set_out_neighbours(n1)
-
-    n4.set_name("Node 4")
-    n4.set_out_neighbours(n0, n1)
-
-    n5.set_name("Node 5")
-    n5.set_out_neighbours(n0, n2)
-
+    all_nodes = {}
+    independent_nodes = {}
     sorted_nodes = []
-    independent_nodes = [n4, n5]
 
-    while (len(independent_nodes) != 0):
-        print("Starting...")
-        chosen_node = independent_nodes.pop()
-        print("Choosing independent node " + chosen_node.name)
-        sorted_nodes.append(chosen_node)
-        for node in chosen_node.out_neighbours:
-            print("Dependency: " + node.name)
-            node.in_neighbours.remove(chosen_node)
-            print(node.in_neighbours)
-            if (len(node.in_neighbours) == 0):
-                independent_nodes.append(node)
-                print(node.name + " is independent")
+    # parsing data from the workflow file to extract all nodes
+    for i in json_object:
+        chosen_item = json_object[i]
+        if (chosen_item["type"] == "Connection"):
+            # extract the nodes from the connections
+            input_node = chosen_item["input"][0]
+            output_node = chosen_item["output"][0]
+
+            if input_node not in all_nodes:
+                all_nodes[input_node] = {
+                    "in_neighbours" : [],
+                    "out_neighbours" : [output_node]
+                }
+            else: # if node is already in the dictionary, then it's also the input node of another node, so update this node's out neighbour
+                all_nodes[input_node]["out_neighbours"].append(output_node)
+
+            if output_node not in all_nodes:
+                all_nodes[output_node] = {
+                    "in_neighbours" : [input_node],
+                    "out_neighbours" : []
+                }
             else:
-                print("Not independent")
+                all_nodes[output_node]["in_neighbours"].append(input_node)
 
-    print("Result: ")
-    for node in sorted_nodes:
-        print(node.name)
+    # find all independent nodes
+    for i in all_nodes:
+        if len(all_nodes[i]["in_neighbours"]) == 0:
+            independent_nodes[i] = {
+                "in_neighbours" : [],
+                "out_neighbours" : all_nodes[i]["out_neighbours"]
+            }    
+
+    while independent_nodes:
+        chosen_key = independent_nodes.popitem()[0]
+
+        # construct that chosen node
+        chosen_node = {     
+            "name": chosen_key, 
+            "in_neighbours": all_nodes[chosen_key]["in_neighbours"],
+            "out_neighbours": all_nodes[chosen_key]["out_neighbours"]
+        }
+
+        # add it to the sorted nodes
+        sorted_nodes.append(chosen_node["name"])
+
+        for node in chosen_node["out_neighbours"]:
+            all_nodes[node]["in_neighbours"].remove(chosen_key)
+            if (len(all_nodes[node]["in_neighbours"]) == 0):
+                independent_nodes[node] = {
+                "in_neighbours" : all_nodes[node]["in_neighbours"],
+                "out_neighbours" : all_nodes[node]["out_neighbours"]
+            }
+        
+    return sorted_nodes
