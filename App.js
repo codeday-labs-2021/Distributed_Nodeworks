@@ -5,10 +5,12 @@ import ReactFlow, {
   removeElements,
   Controls,
 } from 'react-flow-renderer';
-
 import AddNode from './AddNode';
-
+import Save from './Save';
 import './App.css';
+import './Save.css';
+
+
 
 const initialElements = [
   {
@@ -73,6 +75,7 @@ const DnDFlow = () => {
           </ReactFlow>
         </div>
         <AddNode />
+        <Save/>
       </ReactFlowProvider>
     </div>
   );

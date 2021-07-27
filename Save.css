@@ -1,0 +1,10 @@
+.save__controls {
+    position: relative;
+    right: 10px;
+    top: 10px;
+    font-size: 20px;
+  }
+  
+  .save__controls button {
+    margin-left: 10px;
+  }
