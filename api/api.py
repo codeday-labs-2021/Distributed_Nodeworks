@@ -1,13 +1,14 @@
-from flask import Flask, render_template, request
+from flaskapp import app
 
-app = Flask(__name__)
+# how I view the data table:
+# enter virtual environment 
+# >>> python
+# >>> from api import UserModel
+# >>> UserModel.query.all()
+# or
+# go to Postman and send the api request from there
 
-@app.route('/', methods=['GET', 'POST'])
-def form():
-    if(request.method=="POST"):
-        name = (request.form.get("login"))
-        return {'name': name}
-    return "hello"
-
-if __name__ == "__main__":
+# this is only for running the program, everything else is working in the flaskapp package, thanks to __init__.py
+if __name__ == '__main__':
     app.run()
+
