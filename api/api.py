@@ -9,4 +9,4 @@ from flaskapp import app
 
 # this is only for running the program, everything else is working in the flaskapp package, thanks to __init__.py
 if __name__ == '__main__':
-    app.run()
+    app.run(host="localhost", port=5000, debug=True)
