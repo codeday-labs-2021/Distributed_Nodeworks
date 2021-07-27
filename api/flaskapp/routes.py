@@ -8,9 +8,11 @@ from io import BytesIO
 # create calls for user database
 @app.route('/api/v1/register', methods=['GET','POST'])
 def register():
-    # if current_user.is_authenticated:
-    #     # return redirect(url_for('home')) # theres no home yet
-    #     pass
+    if current_user.is_authenticated:
+        return jsonify(
+            success = True,
+            user = current_user.is_authenticated
+        )
 
     if (request.method == 'POST'):
 
@@ -21,7 +23,7 @@ def register():
         username = user_data['username']
         email = user_data['emailAddress']
         password = user_data['password']
-        # password2 = user_data['password2']
+        password2 = user_data['password2']
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
         # role = user_data['role']
 
@@ -33,12 +35,14 @@ def register():
         search_user_by_email = UserModel.query.filter_by(email=email).first()
         if search_user_by_email:
             abort(409, description="This email is already used")
+        if password != password2:
+            abort(409, description = "Passwords do not match")
 
         # assign random unique id
         user_key = uuid.uuid4().hex
 
         # # add the user
-        new_user = UserModel(user_key=user_key, username=username, email=email, password=hashed_password)
+        new_user = UserModel(user_key=user_key, username=username, email=email, password=hashed_password, role = "user")
         # #left out role = role
         db.session.add(new_user)
         db.session.commit()
@@ -47,11 +51,13 @@ def register():
     return "hello"
 
 
-@app.route('/api/v1/login', methods=['POST'])
+@app.route('/api/v1/login', methods=['GET','POST'])
 def login():
     if current_user.is_authenticated:
-        # return redirect(url_for('home')) # theres no home yet
-        pass
+        return jsonify(
+            success = True,
+            user = current_user.is_authenticated
+        )
 
     if (request.method == 'POST'):
 

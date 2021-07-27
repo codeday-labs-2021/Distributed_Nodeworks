@@ -1,6 +1,24 @@
 import React, {Component} from 'react';
 class Login extends Component{
-
+    handleSubmit = e => {
+        e.preventDefault();
+        console.log('works!')
+        const data = {
+            username: this.username,
+            password: this.password,
+            emailAddress: this.email
+        }
+        axios.post('http://localhost:5000/api/v1/register',data).then(
+            res=>{
+                console.log(res)
+            }
+        ).catch(
+            err =>{
+                console.log(err);
+            }
+        )
+        // console.log(data)
+    }
     render() {
         return(
             <div className="wrapper fadeInDown">
