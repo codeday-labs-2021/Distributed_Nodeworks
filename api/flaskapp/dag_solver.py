@@ -73,7 +73,7 @@ def dag_solver(json_object):
         }
 
         # add it to the sorted nodes
-        sorted_nodes.append(chosen_node["name"])
+        sorted_nodes.append(json_object[chosen_node["name"]])
 
         for node in chosen_node["out_neighbours"]:
             all_nodes[node]["in_neighbours"].remove(chosen_key)
