@@ -1,15 +1,24 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
   removeElements,
   Controls,
+  useZoomPanHelper,
 } from 'react-flow-renderer';
+import localforage from 'localforage';
+
+import './Save.css';
 import AddNode from './AddNode';
 
 import './App.css';
 
+localforage.config({
+  name: 'react-flow-docs',
+  storeName: 'flows',
+});
 
+const flowKey = 'example-flow';
 
 
 const initialElements = [
@@ -25,6 +34,10 @@ let id = 0;
 const getId = () => `dndnode_${id++}`;
 
 const DnDFlow = () => {
+  //save button
+  const [rfInstance, setRfInstance] = useState(null);
+  
+  //dndflow
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [elements, setElements] = useState(initialElements);
@@ -55,9 +68,34 @@ const DnDFlow = () => {
       position,
       data: { label: `${type} node` },
     };
-
+    //elements are being added
     setElements((es) => es.concat(newNode));
+    
+    console.log();
   };
+  //for the save button(onClick)
+  const onSave = useCallback(() => {
+    console.log("Hello");
+    console.log(elements);
+    if (rfInstance) {
+      const flow = rfInstance.toObject();
+      localforage.setItem(flowKey, flow);
+    }
+  }, [rfInstance]);
+
+  const onRestore = useCallback(() => {
+    console.log("restore");
+    const restoreFlow = async () => {
+      const flow = await localforage.getItem(flowKey);
+
+      if (flow) {
+        const [x = 0, y = 0] = flow.position;
+        setElements(flow.elements || []);
+        // transform({ x, y, zoom: flow.zoom || 0 });
+      }
+    };
+    restoreFlow();
+  }, [setElements]);
 
   return (
     <div className="dndflow">
@@ -72,10 +110,14 @@ const DnDFlow = () => {
             onDragOver={onDragOver}
           >
             <Controls />
+            <div className="save__controls">
+              <button onClick={onSave}>Save</button>
+              <button onClick={onRestore}>Resotre</button>
+            </div>
           </ReactFlow>
         </div>
         <AddNode />
-    
+
       </ReactFlowProvider>
     </div>
   );
