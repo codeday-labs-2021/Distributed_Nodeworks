@@ -65,15 +65,15 @@ def login():
         user_data = request.get_json(force=True)
 
         # extract info
-        username = user_data['username']
-        email = user_data['email']
+        # username = user_data['username']
+        email = user_data['emailAddress']
         password = user_data['password']
 
         # query the database and check password
         user = UserModel.query.filter_by(email=email).first()
         if user and bcrypt.check_password_hash(user.password, password.encode('utf-8')):
             login_user(user, remember=True)
-            return 'Log in successfully', 200
+            return user_schema.jsonify(user)
         else:
             return 'Not successful, wrong password or email', 403
 
@@ -84,7 +84,7 @@ def logout():
     return 'Logout successfully', 200
 
 
-@app.route('/api/v1/getuser/<key>', methods=['GET'])
+@app.route('/api/v1/getuser/<key>', methods=['GET','POST'])
 def get_user(key):
     user = UserModel.query.filter_by(user_key=key).first()
     return user_schema.jsonify(user)
