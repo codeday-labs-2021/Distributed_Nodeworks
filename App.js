@@ -6,9 +6,9 @@ import ReactFlow, {
   Controls,
 } from 'react-flow-renderer';
 import AddNode from './AddNode';
-import Save from './Save';
+
 import './App.css';
-import './Save.css';
+
 
 
 
@@ -75,7 +75,7 @@ const DnDFlow = () => {
           </ReactFlow>
         </div>
         <AddNode />
-        <Save/>
+    
       </ReactFlowProvider>
     </div>
   );

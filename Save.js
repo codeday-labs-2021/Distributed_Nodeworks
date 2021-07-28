@@ -6,6 +6,8 @@ import ReactFlow, {
   useZoomPanHelper,
 } from 'react-flow-renderer';
 import localforage from 'localforage';
+import initialElements from './App';
+
 import './Save.css';
 
 localforage.config({
@@ -14,14 +16,6 @@ localforage.config({
 });
 
 const flowKey = 'example-flow';
-
-const getNodeId = () => `randomnode_${+new Date()}`;
-
-const initialElements = [
-  { id: '1', data: { label: 'Node 1' }, position: { x: 100, y: 100 } },
-  { id: '2', data: { label: 'Node 2' }, position: { x: 100, y: 200 } },
-  { id: 'e1-2', source: '1', target: '2' },
-];
 
 const SaveRestore = () => {
   const [rfInstance, setRfInstance] = useState(null);
@@ -53,18 +47,6 @@ const SaveRestore = () => {
     restoreFlow();
   }, [setElements, transform]);
 
-  const onAdd = useCallback(() => {
-    const newNode = {
-      id: getNodeId(),
-      data: { label: 'Added node' },
-      position: {
-        x: Math.random() * window.innerWidth - 100,
-        y: Math.random() * window.innerHeight,
-      },
-    };
-    setElements((els) => els.concat(newNode));
-  }, [setElements]);
-
   return (
     <ReactFlowProvider>
       <ReactFlow
@@ -76,7 +58,6 @@ const SaveRestore = () => {
         <div className="save__controls">
           <button onClick={onSave}>save</button>
           <button onClick={onRestore}>restore</button>
-          
         </div>
       </ReactFlow>
     </ReactFlowProvider>
