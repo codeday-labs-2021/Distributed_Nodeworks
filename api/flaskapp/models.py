@@ -33,8 +33,9 @@ users_schema = UserSchema(many=True)
 class WorkflowModel(db.Model):
     __bind_key__ = 'workflow_db'
     id = db.Column(db.Integer, primary_key=True)
-    owner = db.Column(db.String(32), nullable=False)
-    name = db.Column(db.String(32), nullable=False)
+    owner = db.Column(db.String(20), nullable=False)
+    name = db.Column(db.String(20), nullable=False)
+    file_id = db.Column(db.String(45), nullable=False, unique=True)
     content = db.Column(db.String)
 
     def __repr__(self):
@@ -42,7 +43,7 @@ class WorkflowModel(db.Model):
 
 class WorkflowSchema(ma.Schema):
     class Meta:
-        fields = ("id", "owner", "name", "content")
+        fields = ("id", "owner", "name", "content", "file_id")
 
 workflow_schema = WorkflowSchema()
 
