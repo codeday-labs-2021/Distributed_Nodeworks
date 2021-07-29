@@ -46,5 +46,3 @@ class WorkflowSchema(ma.Schema):
         fields = ("id", "owner", "name", "content", "file_id")
 
 workflow_schema = WorkflowSchema()
-
-db.create_all()
