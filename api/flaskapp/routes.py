@@ -1,5 +1,5 @@
 from flask import request, jsonify, abort, redirect, url_for, render_template, send_file, Blueprint
-from flaskapp import db, bcrypt
+from flaskapp import db, bcrypt, q
 from flaskapp.tasks import execute_node
 from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel, workflow_schema
 from flaskapp.dag_solver import dag_solver
@@ -198,15 +198,16 @@ def delete_workflow(file_id):
 
 @api_bp.route('/api/v1/workflow/execute/<file_id>')
 def execute_file(file_id):
-    if current_user.is_authenticated:
+    if True:
         chosen_workflow = WorkflowModel.query.filter_by(file_id=file_id).first()
         json_content = json.loads(chosen_workflow.content)
         sorted_order = dag_solver(json_content)
-        # init queue
-        # # execute node
-        # for node in sorted_order:
-        job = execute_node.queue(sorted_order[0])
         return json.dumps(sorted_order)
     else:
         abort(403, description="Not logged in")
 
+
+@api_bp.route('/api/v1/workflow/execute/test_queue')
+def test_queue():
+    job = q.enqueue(execute_node, "abcdefghijklmnop")
+    return json.dumps(f"Theres a job {job.id}, {len(q)} tasks right now")
