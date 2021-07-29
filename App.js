@@ -34,8 +34,6 @@ let id = 0;
 const getId = () => `dndnode_${id++}`;
 
 const DnDFlow = () => {
-  //save button
-  const [rfInstance, setRfInstance] = useState(null);
   
   //dndflow
   const reactFlowWrapper = useRef(null);
@@ -53,8 +51,8 @@ const DnDFlow = () => {
     event.dataTransfer.dropEffect = 'move';
   };
 
-  const onDrop = (event) => {
-    event.preventDefault();
+  const onDrop = useCallback ((event) => {
+    //event.preventDefault();
 
     const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
     const type = event.dataTransfer.getData('application/reactflow');
@@ -70,19 +68,17 @@ const DnDFlow = () => {
     };
     //elements are being added
     setElements((es) => es.concat(newNode));
-    
-    console.log();
-  };
+
+  },[setElements]);
+
   //for the save button(onClick)
   const onSave = useCallback(() => {
-    console.log("Hello");
-    console.log(elements);
-    if (rfInstance) {
-      const flow = rfInstance.toObject();
+    if (reactFlowInstance) {
+      const flow = reactFlowInstance.toObject();
       localforage.setItem(flowKey, flow);
     }
-  }, [rfInstance]);
-
+  }, [reactFlowInstance]);
+//stop undo
   const onRestore = useCallback(() => {
     console.log("restore");
     const restoreFlow = async () => {
@@ -96,6 +92,12 @@ const DnDFlow = () => {
     };
     restoreFlow();
   }, [setElements]);
+
+  const onSee = () => {
+    console.log(elements)
+    let ele = JSON.stringify(elements)
+    console.log(ele)
+  }
 
   return (
     <div className="dndflow">
@@ -113,6 +115,7 @@ const DnDFlow = () => {
             <div className="save__controls">
               <button onClick={onSave}>Save</button>
               <button onClick={onRestore}>Resotre</button>
+              <button onClick={onSee}>See</button>
             </div>
           </ReactFlow>
         </div>
