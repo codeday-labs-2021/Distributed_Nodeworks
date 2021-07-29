@@ -1,8 +1,11 @@
 import time
 from flask import Flask
-from flaskapp import rq
+from flask_rq2 import RQ
 
+rq = RQ()
 @rq.job
+
 def execute_node(node):
-    print(node)
+    node = str(node)
     time.sleep(1)
+    return node

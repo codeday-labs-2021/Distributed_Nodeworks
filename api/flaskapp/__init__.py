@@ -7,12 +7,15 @@ from flask_login import LoginManager
 from redis import Redis
 from flask_rq2  import RQ
 from config import Config
+from flask_cors import CORS
+import time
+from flaskapp.tasks import rq
 
-rq = RQ()
 ma = Marshmallow()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 db = SQLAlchemy()
+cors = CORS()
 
 def create_all(config_class=Config):
     app = Flask(__name__)
@@ -22,6 +25,7 @@ def create_all(config_class=Config):
     ma.init_app(app)
     login_manager.init_app(app)
     bcrypt.init_app(app)
+    cors.init_app(app)
 
     with app.app_context():
         from flaskapp.routes import api_bp

@@ -1,5 +1,6 @@
 from flask import request, jsonify, abort, redirect, url_for, render_template, send_file, Blueprint
-from flaskapp import db, bcrypt, rq
+from flaskapp import db, bcrypt
+from flaskapp.tasks import execute_node
 from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel, workflow_schema
 from flaskapp.dag_solver import dag_solver
 from flaskapp.tasks import execute_node
@@ -10,6 +11,10 @@ import json
 import time
 
 api_bp = Blueprint("api", __name__)
+
+@api_bp.route('/api/v1/', methods=['GET'])
+def home():
+    return 'Hello', 200
 
 # create calls for user database
 @api_bp.route('/api/v1/register', methods=['POST'])
@@ -197,18 +202,10 @@ def execute_file(file_id):
         chosen_workflow = WorkflowModel.query.filter_by(file_id=file_id).first()
         json_content = json.loads(chosen_workflow.content)
         sorted_order = dag_solver(json_content)
-        
         # init queue
-        # default_queue = rq.get_queue()
-
-        # # initialize worker
-        # default_worker = rq.get_worker()
-        # default_worker.work(burst=True)
-
-        # # # execute node
+        # # execute node
         # for node in sorted_order:
-        #     job = default_queue.enqueue(execute_node, args=(node))
-
+        job = execute_node.queue(sorted_order[0])
         return json.dumps(sorted_order)
     else:
         abort(403, description="Not logged in")
