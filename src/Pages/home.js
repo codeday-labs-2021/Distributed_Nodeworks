@@ -1,66 +1,115 @@
-import axios from 'axios';
-import React, { useState, useEffect,Component } from 'react';
-import ReactFlow from 'react-flow-renderer';
+import React, { useState, useRef, useCallback } from 'react';
+import ReactFlow, {
+  ReactFlowProvider,
+  addEdge,
+  removeElements,
+  Controls,
+} from 'react-flow-renderer';
 
-// //time in nodes
-export default class App extends Component {
-  // const [currentTime, setCurrentTime] = useState(0);
- 
-  // useEffect(() => {
-  //   fetch('/').then(res => res.json()).then(data => {
-  //     setCurrentTime(data.name);
-  //   });
-  // }, []);
-  state = {}
-  // [currentTime, setCurrentTime] = userState(0)
-  componentDidMount(){
-    const config = {
-      headers:{
-        Authorization: 'Bearer ' + localStorage.getItem('token')
-      }
+import Sidebar from './Sidebar.js';
+
+import './dnd.css';
+import localforage from 'localforage';
+localforage.config({
+  name: 'react-flow-docs',
+  storeName: 'flows',
+});
+
+const flowKey = 'example-flow';
+
+const initialElements = [
+  {
+    id: '1',
+    type: 'input',
+    data: { label: 'input node' },
+    position: { x: 250, y: 5 },
+  },
+];
+
+let id = 0;
+const getId = () => `dndnode_${id++}`;
+
+const DnDFlow = () => {
+  const reactFlowWrapper = useRef(null);
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [elements, setElements] = useState(initialElements);
+  const onConnect = (params) => setElements((els) => addEdge(params, els));
+  const onElementsRemove = (elementsToRemove) =>
+    setElements((els) => removeElements(elementsToRemove, els));
+
+  const onLoad = (_reactFlowInstance) =>
+    setReactFlowInstance(_reactFlowInstance);
+
+  const onDragOver = (event) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  };
+
+  const onDrop = useCallback((event) => {
+    // event.preventDefault();
+
+    const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+    const type = event.dataTransfer.getData('application/reactflow');
+    const position = reactFlowInstance.project({
+      x: event.clientX - reactFlowBounds.left,
+      y: event.clientY - reactFlowBounds.top,
+    });
+    const newNode = {
+      id: getId(),
+      type,
+      position,
+      data: { label: `${type} node` },
+    };
+
+    setElements((es) => es.concat(newNode));
+    console.log(newNode.id);
+  },[setElements]);
+  
+  const onSave = useCallback(() => {
+    if (reactFlowInstance) {
+      const flow = reactFlowInstance.toObject();
+      localforage.setItem(flowKey, flow);
     }
-    axios.get('http://localhost:5000/api/v1/getuser/'+localStorage.getItem('token'),config).then(
-      res=>{
-        console.log(res['data']['username'])
-        this.setState({user:res['data']['username']})
-      },
-      err=>{
-        console.log(err)
-      }
-    )
+  }, [reactFlowInstance]);
+  const sendWorkflow = () =>{
+    console.log(elements)
+    let ele = JSON.stringify(elements)
+    console.log(ele)
   }
+  const onRestore = useCallback(() => {
+    const restoreFlow = async () => {
+      const flow = await localforage.getItem(flowKey);
 
-  //nodes
-  render(){
-    const elements = [
-      {
-        id: '1',
-        type: 'input', // input node
-        data: { label: 'Welcome ' + this.state.user},
-        position: { x: 250, y: 25 },
-      },
-      // default node
-      {
-        id: '2',
-        // you can also pass a React component as a label
-        data: { label: <div>Default Node</div>},
-        position: { x: 100, y: 125 },
-      },
-      {
-        id: '3',
-        type: 'output', // output node
-        data: { label: 'Output Node' },
-        position: { x: 250, y: 250 },
-      },
-      // animated edge
-      { id: 'e1-2', source: '1', target: '2', animated: true },
-      { id: 'e2-3', source: '2', target: '3' },
-    ];
-    return (
-      <div style={{ height: 600 }}>
-        <ReactFlow elements={elements} />
-        <h2>{this.state.user}</h2>
-      </div>
-    )
-  }
-}
+      if (flow) {
+        const [x = 0, y = 0] = flow.position;
+        setElements(flow.elements || []);
+      }
+    };
+
+    restoreFlow();
+  }, [setElements]);
+  return (
+    <div className="dndflow">
+      <ReactFlowProvider>
+        <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+          <ReactFlow
+            elements={elements}
+            onConnect={onConnect}
+            onElementsRemove={onElementsRemove}
+            onLoad={onLoad}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+          >
+            <Controls />
+          </ReactFlow>
+          <button onClick={onSave}>Save</button>
+          <button onClick={onRestore}>Restore</button>
+          <button onClick={sendWorkflow}>SEE</button>
+        </div>
+        <Sidebar />
+      </ReactFlowProvider>
+    </div>
+  );
+};
+
+export default DnDFlow;

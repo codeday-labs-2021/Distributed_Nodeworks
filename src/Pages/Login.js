@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import { Redirect } from "react-router-dom";
 class Login extends Component{
+    state = {}
     handleSubmit = e => {
         e.preventDefault();
         console.log('works!')
@@ -17,6 +18,10 @@ class Login extends Component{
                 // if(res['status'] == 200){
                 //     this.setState({ redirect: "/home" });
                 // }
+                this.setState({
+                    loggedIn: true
+                });
+                window.location.reload()
                 console.log(res['data']['user_key'])
             }
         ).catch(
@@ -27,6 +32,9 @@ class Login extends Component{
         // console.log(data)
     }
     render() {
+        if(this.state.loggedIn){
+            return <Redirect to={'/'} />
+        }
         return(
             <div className="wrapper fadeInDown">
                 <div id="formContent">
