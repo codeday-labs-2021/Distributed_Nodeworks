@@ -98,7 +98,6 @@ def get_user(key):
 @api_bp.route('/api/v1/getme', methods=['GET'])
 def who_am_i():
     if current_user.is_authenticated:
-        # user = UserModel.query.filter_by(username=current_user.username)
         return current_user.username
 
 
@@ -139,12 +138,31 @@ def publish():
             db.session.add(new_file)
             db.session.commit()
             return file.filename + ' is saved.', 201
+
         if request.method == 'PUT':
-            return file.filename + ' is updated.', 200
+            file_data = request.get_json(force=True)
+
+            file_name = file_data["file_name"]
+            owner = file_data["owner"]
+            file_content = str(file_data["file_content"])
+            file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
+
+            search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id)
+            new_file = WorkflowModel(owner=owner, name=file_name, content=file_content, file_id=file_id)
+            db.session.add(new_file)
+            db.session.commit()
+            return 'File is put.', 201
+
         if request.method == 'GET':
             return render_template('upload.html')
     else:
         abort(403, description="Not logged in")
+
+
+@api_bp.route('/api/v1/workflow/update/<file_id>', methods=['PUT'])
+def update_file():
+    if current_user.is_authenticated:
+        pass
 
 
 @api_bp.route('/api/v1/workflow/seefile/<id>', methods=['GET'])

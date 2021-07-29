@@ -3,7 +3,6 @@
 from flaskapp import ma, db, login_manager
 from flask import abort
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.dialects.postgresql import UUID
 from marshmallow import Schema # for serializing the object into JSON data 
 from flask_login import UserMixin # to represent a User class with important attributes like isActive, isLoggedin, isAnonymous, etc
 
