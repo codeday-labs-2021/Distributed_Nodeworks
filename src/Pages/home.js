@@ -7,7 +7,7 @@ import ReactFlow, {
 } from 'react-flow-renderer';
 
 import Sidebar from './Sidebar.js';
-
+import axios from 'axios';
 import './dnd.css';
 import localforage from 'localforage';
 localforage.config({
@@ -83,10 +83,23 @@ const DnDFlow = () => {
     }
   }, [reactFlowInstance]);
   const sendWorkflow = () =>{
-    console.log(elements)
+    // console.log(elements)
     let ele = JSON.stringify(elements)
     console.log(ele)
-    axios.post('http://localhost:5000/api/v1/login',data)
+    const data={
+      user: localStorage.getItem('username'),
+      node: ele
+    }
+    console.log(data)
+    axios.put('http://localhost:5000/api/v1/workflow/publish/'+localStorage.getItem('token'),data).then(
+      res=>{
+        console.log("HELLO" + res)
+    }
+    ).catch(
+      err =>{
+          console.log(err);
+      }
+    )
   }
   const onRestore = useCallback(() => {
     const restoreFlow = async () => {
@@ -116,9 +129,7 @@ const DnDFlow = () => {
           </ReactFlow>
           <button onClick={onSave}>Save</button>
           <button onClick={onRestore}>Restore</button>
-          <form method="PUT">
-            <button method onClick={sendWorkflow}>SEE</button>
-          </form>
+          <button method onClick={sendWorkflow}>SEE</button>
         </div>
         <Sidebar />
       </ReactFlowProvider>

@@ -77,16 +77,18 @@ def login():
         user_data = request.get_json(force=True)
 
         # extract info
-        # username = user_data['username']
+        username = user_data['username']
         email = user_data['emailAddress']
         password = user_data['password']
 
         # query the database and check password
         user = UserModel.query.filter_by(email=email).first()
         if user and bcrypt.check_password_hash(user.password, password.encode('utf-8')):
+            print("HELLOs")
             login_user(user, remember=True)
             return user_schema.jsonify(user)
         else:
+            print("HELLO NOT SUCCESSFUL")
             return 'Not successful, wrong password or email', 403
 
 
@@ -131,9 +133,11 @@ def workflow_hello():
     return 'This is workflow'
 
 
-@api_bp.route('/api/v1/workflow/publish', methods=['POST', 'GET', 'PUT'])
-def publish():
-    if current_user.is_authenticated:
+@api_bp.route('/api/v1/workflow/publish/<key>', methods=['POST', 'GET', 'PUT'])
+def publish(key):
+    # if current_user.is_authenticated:
+    user = UserModel.query.filter_by(user_key=key).first()
+    if user != None:
         if request.method == 'POST':
             file = request.files['file']
 
@@ -152,21 +156,24 @@ def publish():
 
         if request.method == 'PUT':
             file_data = request.get_json(force=True)
+            print(file_data)
+            # file_name = file_data["file_name"]
+            file_name = "test"
+            # print(user.username)
+            owner = file_data['user']
+            file_content = str(file_data["node"])
+            # file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
 
-            file_name = file_data["file_name"]
-            owner = file_data["owner"]
-            file_content = str(file_data["file_content"])
-            file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
-
-            search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id)
-            new_file = WorkflowModel(owner=owner, name=file_name, content=file_content, file_id=file_id)
-            db.session.add(new_file)
-            db.session.commit()
+            # search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id)
+            # new_file = WorkflowModel(owner=owner, name=file_name, content=file_content, file_id=file_id)
+            # db.session.add(new_file)
+            # db.session.commit()
             return 'File is put.', 201
 
         if request.method == 'GET':
             return render_template('upload.html')
     else:
+        print("NOT LOGGED IN")
         abort(403, description="Not logged in")
 
 
