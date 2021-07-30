@@ -6,11 +6,11 @@ RUN mkdir -p /app
 
 WORKDIR /app
 
-RUN apk add --update musl-dev gcc libffi-dev
-
 RUN python -m pip install --upgrade pip
 
 COPY requirements.txt requirements.txt
+
+RUN pip install greenlet==1.1.0
 
 RUN pip install -r requirements.txt
 
