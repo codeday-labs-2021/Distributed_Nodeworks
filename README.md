@@ -20,6 +20,9 @@ Familiarity with intermediate to advanced Python, Git, database server concepts 
 - pip install flask_marshmallow
 - pip install flask_bcrypt
 - pip install flask_login
+- pip install redis
+- pip install flask_rq2
+- 
 ### Features
 Login, Signup, Homepage Ui
 
