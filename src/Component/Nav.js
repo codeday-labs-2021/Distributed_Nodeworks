@@ -11,14 +11,17 @@ const Nav = () =>{
         return(
             <nav className = "navbar navbar-expand navbar-dark bg-dark">
                 <div className = "container">
-                    <a href = "/" className = "navbar-brand">Home</a>
+                    <a href = "/" className = "navbar-brand">{localStorage.getItem('username') }'s Nodeworks</a>
                     <div className = "collapse navbar-collapse">
                         <ul className="navbar-nav ms-auto">
                             <li className="nav-item">
-                            <a href="/login" className = "nav-link" onClick={logout}>Logout</a>
+                            <a href="/workflow" className = "nav-link" onClick={logout}>Workflows</a>
                             </li>
                             <li className="nav-item">
-                            <a className = "nav-link">  {localStorage.getItem('username')}</a>
+                            <a href="/status" className = "nav-link" onClick={logout}>Status</a>
+                            </li>
+                            <li className="nav-item">
+                            <a href="/login" className = "nav-link" onClick={logout}>Logout</a>
                             </li>
                         </ul>
                     </div>
