@@ -4,25 +4,35 @@ from flask_marshmallow import Marshmallow
 from marshmallow import Schema
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
+from redis import Redis
+from flask_rq2  import RQ
+from config import Config
 from flask_cors import CORS
-app = Flask(__name__)
-CORS(app)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-ma = Marshmallow(app)
-bcrypt = Bcrypt(app)
-login_manager = LoginManager(app)
+import time
+from flaskapp.tasks import rq
 
-# getting unique user key for security, will improve later
-app.config['SECRET_KEY'] = 'ufhkjkbfieihf7398738'
+ma = Marshmallow()
+bcrypt = Bcrypt()
+login_manager = LoginManager()
+db = SQLAlchemy()
+cors = CORS()
 
-# setting up database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SQLALCHEMY_BINDS'] = {'workflow_db' : 'sqlite:///workflow_database.db'}
-db = SQLAlchemy(app)
+def create_all(config_class=Config):
+    app = Flask(__name__)
+    app.config.from_object(config_class)
+    rq.init_app(app)
+    db.init_app(app)
+    ma.init_app(app)
+    login_manager.init_app(app)
+    bcrypt.init_app(app)
+    cors.init_app(app)
 
-# create data table
-@app.before_first_request
-def create_tables():
-    db.create_all()
+    with app.app_context():
+        from flaskapp.routes import api_bp
+        app.register_blueprint(api_bp)
+        db.create_all()
+
+    return app
+
 
 from flaskapp import routes

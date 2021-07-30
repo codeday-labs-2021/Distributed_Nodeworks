@@ -1,12 +1,23 @@
-from flask import request, jsonify, abort, redirect, url_for, render_template, send_file
-from flaskapp import app, db, bcrypt
-from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel
+from flask import request, jsonify, abort, redirect, url_for, render_template, send_file, Blueprint
+from flaskapp import db, bcrypt
+from flaskapp.tasks import execute_node
+from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel, workflow_schema
+from flaskapp.dag_solver import dag_solver
+from flaskapp.tasks import execute_node
 from flask_login import login_user, current_user, logout_user
 import uuid
 from io import BytesIO
+import json
+import time
+
+api_bp = Blueprint("api", __name__)
+
+@api_bp.route('/api/v1/', methods=['GET'])
+def home():
+    return 'Hello', 200
 
 # create calls for user database
-@app.route('/api/v1/register', methods=['GET','POST'])
+@api_bp.route('/api/v1/register', methods=['GET','POST'])
 def register():
     if current_user.is_authenticated:
         return jsonify(
@@ -51,7 +62,8 @@ def register():
     return "hello"
 
 
-@app.route('/api/v1/login', methods=['GET','POST'])
+
+@api_bp.route('/api/v1/login', methods=['GET','POST'])
 def login():
     if current_user.is_authenticated:
         return jsonify(
@@ -78,59 +90,129 @@ def login():
             return 'Not successful, wrong password or email', 403
 
 
-@app.route('/api/v1/logout')
+@api_bp.route('/api/v1/logout')
 def logout():
-    logout_user()
-    return 'Logout successfully', 200
+    if current_user.is_authenticated:
+        logout_user()
+        return 'Logout successfully', 200
+    else:
+        abort(403, description="Not logged in")
+    
 
 
-@app.route('/api/v1/getuser/<key>', methods=['GET','POST'])
+@api_bp.route('/api/v1/getuser/<key>', methods=['GET'])
 def get_user(key):
     user = UserModel.query.filter_by(user_key=key).first()
     return user_schema.jsonify(user)
 
 
-@app.route('/api/v1/getallusers', methods=['GET','POST'])
+@api_bp.route('/api/v1/getme', methods=['GET'])
+def who_am_i():
+    if current_user.is_authenticated:
+        return current_user.username
+
+
+@api_bp.route('/api/v1/getallusers')
 def get_all_users():
     users = UserModel.query.all()
     return users_schema.jsonify(users)
 
 
-@app.route('/api/v1/deleteall')
+@api_bp.route('/api/v1/deleteall')
 def delete():
     UserModel.query.delete()
     db.session.commit()
     return 'Delete', 200
 
+
 # create calls for workflow database
-@app.route('/api/v1/workflow/')
+@api_bp.route('/api/v1/workflow/')
 def workflow_hello():
-    # redirect(url_for('publish'))
-    return 'hi'
+    return 'This is workflow'
 
 
-@app.route('/api/v1/workflow/publish', methods=['POST', 'GET'])
+@api_bp.route('/api/v1/workflow/publish', methods=['POST', 'GET', 'PUT'])
 def publish():
-    if request.method == 'POST':
-        file = request.files['file']
-        file_name = file.filename
-        new_file = WorkflowModel(owner="Mr. Owen", name=file.filename, content=file.read())
-        db.session.add(new_file)
-        db.session.commit()
-        return file.filename + ' is saved.', 201
-    if request.method == 'GET':
-        return render_template('upload.html')
+    if current_user.is_authenticated:
+        if request.method == 'POST':
+            file = request.files['file']
+
+            file_name = str(file.filename).rsplit('.', 1)[0]
+            owner = current_user.username
+            file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
+
+            search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id)
+            if search_file_by_id:
+                abort(409, "This filename has already existed in your account. Please rename.")
+
+            new_file = WorkflowModel(owner=owner, name=file_name, content=file.read(), file_id=file_id)
+            db.session.add(new_file)
+            db.session.commit()
+            return file.filename + ' is saved.', 201
+
+        if request.method == 'PUT':
+            file_data = request.get_json(force=True)
+
+            file_name = file_data["file_name"]
+            owner = file_data["owner"]
+            file_content = str(file_data["file_content"])
+            file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
+
+            search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id)
+            new_file = WorkflowModel(owner=owner, name=file_name, content=file_content, file_id=file_id)
+            db.session.add(new_file)
+            db.session.commit()
+            return 'File is put.', 201
+
+        if request.method == 'GET':
+            return render_template('upload.html')
+    else:
+        abort(403, description="Not logged in")
 
 
-@app.route('/api/v1/workflow/get/<file_id>', methods=['GET'])
+@api_bp.route('/api/v1/workflow/update/<file_id>', methods=['PUT'])
+def update_file():
+    if current_user.is_authenticated:
+        pass
+
+
+@api_bp.route('/api/v1/workflow/seefile/<id>', methods=['GET'])
+def see_file(id):
+    chosen_workflow = WorkflowModel.query.get(id)
+    return workflow_schema.jsonify(chosen_workflow)
+
+
+@api_bp.route('/api/v1/workflow/get/<file_id>', methods=['GET'])
 def get_workflow(file_id):
-    chosen_workflow = WorkflowModel.query.get(file_id)
-    return send_file(BytesIO(chosen_workflow.content), as_attachment=True, attachment_filename="download.nc")
+    if current_user.is_authenticated:
+        chosen_workflow = WorkflowModel.query.filter_by(file_id=file_id).first()
+        return send_file(BytesIO(chosen_workflow.content), as_attachment=True, attachment_filename="download.nc")
+    else:
+        abort(403, description="Not logged in")
 
 
-@app.route('/api/v1/workflow/delete/<file_id>', methods=['GET'])
+@api_bp.route('/api/v1/workflow/delete/<file_id>', methods=['GET'])
 def delete_workflow(file_id):
-    chosen_workflow = WorkflowModel.query.get(file_id)
-    db.session.delete(chosen_workflow)
-    db.session.commit()
-    return 'Delete workflow successfully', 200
+    if current_user.is_authenticated:
+        chosen_workflow = WorkflowModel.query.filter_by(file_id=file_id).first()
+        db.session.delete(chosen_workflow)
+        db.session.commit()
+        return 'Delete workflow successfully', 200
+    else:
+        abort(403, description="Not logged in")
+
+
+@api_bp.route('/api/v1/workflow/execute/<file_id>')
+def execute_file(file_id):
+    if current_user.is_authenticated:
+        chosen_workflow = WorkflowModel.query.filter_by(file_id=file_id).first()
+        json_content = json.loads(chosen_workflow.content)
+        sorted_order = dag_solver(json_content)
+        # init queue
+        # # execute node
+        # for node in sorted_order:
+        job = execute_node.queue(sorted_order[0])
+        return json.dumps(sorted_order)
+    else:
+        abort(403, description="Not logged in")
+

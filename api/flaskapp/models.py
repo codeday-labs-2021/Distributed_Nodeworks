@@ -3,7 +3,6 @@
 from flaskapp import ma, db, login_manager
 from flask import abort
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.dialects.postgresql import UUID
 from marshmallow import Schema # for serializing the object into JSON data 
 from flask_login import UserMixin # to represent a User class with important attributes like isActive, isLoggedin, isAnonymous, etc
 
@@ -33,11 +32,16 @@ users_schema = UserSchema(many=True)
 class WorkflowModel(db.Model):
     __bind_key__ = 'workflow_db'
     id = db.Column(db.Integer, primary_key=True)
-    owner = db.Column(db.String(32), nullable=False)
-    name = db.Column(db.String(32), nullable=False)
+    owner = db.Column(db.String(20), nullable=False)
+    name = db.Column(db.String(20), nullable=False)
+    file_id = db.Column(db.String(45), nullable=False, unique=True)
     content = db.Column(db.String)
 
     def __repr__(self):
         return f"Workflow(name: {self.name}, owner: {self.owner}, data: {self.content})"
 
-db.create_all()
+class WorkflowSchema(ma.Schema):
+    class Meta:
+        fields = ("id", "owner", "name", "content", "file_id")
+
+workflow_schema = WorkflowSchema()

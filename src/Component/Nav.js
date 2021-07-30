@@ -17,6 +17,9 @@ const Nav = () =>{
                             <li className="nav-item">
                             <a href="/login" className = "nav-link" onClick={logout}>Logout</a>
                             </li>
+                            <li className="nav-item">
+                            <a className = "nav-link">  {localStorage.getItem('username')}</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
