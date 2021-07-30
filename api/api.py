@@ -9,7 +9,7 @@ from flaskapp import app
 # go to Postman and send the api request from there
 
 # this is only for running the program, everything else is working in the flaskapp package, thanks to __init__.py
-print("GIT TEST")
+print("GIT TEST11")
 if __name__ == '__main__':
     app.run()
 
