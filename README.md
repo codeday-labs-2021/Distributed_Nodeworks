@@ -10,6 +10,7 @@ Familiarity with intermediate to advanced Python, Git, database server concepts 
 - npm install react-bootstrap
 - npm install react-flow-renderer
 - npm install react-router-dom
+- npm install axios
 ### For the api--(still working on api)
 - pip install flask
 - pip install flask-sqlalchemy
