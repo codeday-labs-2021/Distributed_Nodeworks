@@ -1,9 +1,9 @@
 from flask import request, jsonify, abort, redirect, url_for, render_template, send_file, Blueprint
 from flaskapp import db, bcrypt, q
-from flaskapp.tasks import execute_node
+# from flaskapp.tasks import execute_node
 from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel, workflow_schema
 from flaskapp.dag_solver import dag_solver
-from flaskapp.tasks import execute_node
+# from flaskapp.tasks import execute_node
 from flask_login import login_user, current_user, logout_user
 import uuid
 from io import BytesIO
@@ -12,6 +12,14 @@ import time
 
 api_bp = Blueprint("api", __name__)
 
+# queue task handler
+def execute_node(item):
+    print("task running...")
+    item = str(item)
+    time.sleep(2)
+    return len(item)
+
+# routes
 @api_bp.route('/api/v1/', methods=['GET'])
 def home():
     return 'Hello', 200
