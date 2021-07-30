@@ -4,8 +4,17 @@
     top: 10px;
     z-index: 4;
     font-size: 12px;
+    
   }
+
   
   .save__controls button {
     margin-left: 5px;
+    background-color: cadetblue;
+    cursor: pointer;
+    border: 2px solid rgb(83, 138, 139);
+    color: white;
+    border-radius: 8px;
+    padding: 10px 24px;
+    text-align: center;
   }
