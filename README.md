@@ -17,6 +17,9 @@ Familiarity with intermediate to advanced Python, Git, database server concepts 
 - pip install flask-sqlalchemy
 - pip install flask-wtf
 - pip install flask-cors
+- pip install flask_marshmallow
+- pip install flask_bcrypt
+- pip install flask_login
 ### Features
 Login, Signup, Homepage Ui
 
