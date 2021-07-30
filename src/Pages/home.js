@@ -86,6 +86,7 @@ const DnDFlow = () => {
     console.log(elements)
     let ele = JSON.stringify(elements)
     console.log(ele)
+    axios.post('http://localhost:5000/api/v1/login',data)
   }
   const onRestore = useCallback(() => {
     const restoreFlow = async () => {
@@ -115,7 +116,9 @@ const DnDFlow = () => {
           </ReactFlow>
           <button onClick={onSave}>Save</button>
           <button onClick={onRestore}>Restore</button>
-          <button onClick={sendWorkflow}>SEE</button>
+          <form method="PUT">
+            <button method onClick={sendWorkflow}>SEE</button>
+          </form>
         </div>
         <Sidebar />
       </ReactFlowProvider>
