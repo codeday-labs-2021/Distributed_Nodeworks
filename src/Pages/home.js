@@ -47,17 +47,27 @@ const DnDFlow = () => {
 
   const onDrop = useCallback((event) => {
     // event.preventDefault();
-
     const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
     const type = event.dataTransfer.getData('application/reactflow');
-    const position = reactFlowInstance.project({
-      x: event.clientX - reactFlowBounds.left,
-      y: event.clientY - reactFlowBounds.top,
-    });
+    var position = null;
+    // try{
+    //   var position = reactFlowInstance.project({
+    //     x: event.clientX - reactFlowBounds.left,
+    //     y: event.clientY - reactFlowBounds.top,
+    //   });
+    //   console.log(position)
+    // }
+    // catch{
+    //   console.log("ERROR")
+    //   window.location.reload()
+    // }
     const newNode = {
       id: getId(),
       type,
-      position,
+      position: {
+        x: event.clientX,
+        y: event.clientY-reactFlowBounds.top
+      },
       data: { label: `${type} node` },
     };
 
@@ -66,6 +76,7 @@ const DnDFlow = () => {
   },[setElements]);
   
   const onSave = useCallback(() => {
+    
     if (reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
       localforage.setItem(flowKey, flow);
