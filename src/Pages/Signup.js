@@ -10,15 +10,20 @@ class signup extends Component{
             password2: this.password2,
             emailAddress: this.email
         }
-        axios.post('http://localhost:5000/api/v1/register',data).then(
-            res=>{
-                console.log(res)
-            }
-        ).catch(
-            err =>{
-                console.log(err);
-            }
-        )
+        if (this.password!= this.password2){
+            window.alert("Passwords do not match")
+        }
+        else{
+            axios.post('http://localhost:5000/api/v1/register',data).then(
+                res=>{
+                    console.log(res)
+                }
+            ).catch(
+                err =>{
+                    console.log(err);
+                }
+            )
+        }
         // console.log(data)
     }
     render () {

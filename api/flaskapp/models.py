@@ -45,3 +45,4 @@ class WorkflowSchema(ma.Schema):
         fields = ("id", "owner", "name", "content", "file_id")
 
 workflow_schema = WorkflowSchema()
+workflows_schema = WorkflowSchema(many=True)

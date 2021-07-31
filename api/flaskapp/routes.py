@@ -1,7 +1,7 @@
 from flask import request, jsonify, abort, redirect, url_for, render_template, send_file, Blueprint
 from flaskapp import db, bcrypt
 from flaskapp.tasks import execute_node
-from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel, workflow_schema
+from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel, workflow_schema,workflows_schema
 from flaskapp.dag_solver import dag_solver
 from flaskapp.tasks import execute_node
 from flask_login import login_user, current_user, logout_user
@@ -34,7 +34,6 @@ def register():
         username = user_data['username']
         email = user_data['emailAddress']
         password = user_data['password']
-        password2 = user_data['password2']
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
         # role = user_data['role']
 
@@ -46,8 +45,6 @@ def register():
         search_user_by_email = UserModel.query.filter_by(email=email).first()
         if search_user_by_email:
             abort(409, description="This email is already used")
-        if password != password2:
-            abort(409, description = "Passwords do not match")
 
         # assign random unique id
         user_key = uuid.uuid4().hex
@@ -84,7 +81,6 @@ def login():
         # query the database and check password
         user = UserModel.query.filter_by(email=email).first()
         if user and bcrypt.check_password_hash(user.password, password.encode('utf-8')):
-            print("HELLOs")
             login_user(user, remember=True)
             return user_schema.jsonify(user)
         else:
@@ -135,9 +131,9 @@ def workflow_hello():
 
 @api_bp.route('/api/v1/workflow/publish/<key>', methods=['POST', 'GET', 'PUT'])
 def publish(key):
-    # if current_user.is_authenticated:
-    user = UserModel.query.filter_by(user_key=key).first()
-    if user != None:
+    if current_user.is_authenticated:
+    # user = UserModel.query.filter_by(user_key=key).first()
+    # if user != None:
         if request.method == 'POST':
             file = request.files['file']
 
@@ -156,18 +152,19 @@ def publish(key):
 
         if request.method == 'PUT':
             file_data = request.get_json(force=True)
-            print(file_data)
+            print(file_data['node'])
             # file_name = file_data["file_name"]
-            file_name = "test"
+            file_name = "test2"
             # print(user.username)
             owner = file_data['user']
             file_content = str(file_data["node"])
             # file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
-
-            # search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id)
-            # new_file = WorkflowModel(owner=owner, name=file_name, content=file_content, file_id=file_id)
-            # db.session.add(new_file)
-            # db.session.commit()
+            file_id = "testNodeFileID5"
+            search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id)
+            print(search_file_by_id)
+            new_file = WorkflowModel(owner=owner, name=file_name, content=file_content, file_id=file_id)
+            db.session.add(new_file)
+            db.session.commit()
             return 'File is put.', 201
 
         if request.method == 'GET':
@@ -185,8 +182,16 @@ def update_file():
 
 @api_bp.route('/api/v1/workflow/seefile/<id>', methods=['GET'])
 def see_file(id):
-    chosen_workflow = WorkflowModel.query.get(id)
+    chosen_workflow = WorkflowModel.query.filter_by(file_id=id).first()
+    print(chosen_workflow)
     return workflow_schema.jsonify(chosen_workflow)
+
+############
+@api_bp.route('/api/v1/workflow/seeAllfile', methods=['GET'])
+def see_All_file():
+    chosen_workflow = WorkflowModel.query.all()
+    print(chosen_workflow)
+    return workflows_schema.jsonify(chosen_workflow)
 
 
 @api_bp.route('/api/v1/workflow/get/<file_id>', methods=['GET'])

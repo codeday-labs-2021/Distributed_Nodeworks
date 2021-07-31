@@ -84,14 +84,14 @@ const DnDFlow = () => {
   }, [reactFlowInstance]);
   const sendWorkflow = () =>{
     // console.log(elements)
-    let ele = JSON.stringify(elements)
-    console.log(ele)
+    // let ele = JSON.stringify(elements)
+    // console.log(ele)
     const data={
       user: localStorage.getItem('username'),
-      node: ele
+      node: elements
     }
     console.log(data)
-    axios.put('http://localhost:5000/api/v1/workflow/publish/'+localStorage.getItem('token'),data).then(
+    axios.put('http://localhost:5000/api/v1/workflow/publish/'+localStorage.getItem('token'),data,{withCredentials: true}).then(
       res=>{
         console.log("HELLO" + res)
     }
