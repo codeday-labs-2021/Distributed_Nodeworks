@@ -1,7 +1,7 @@
 from flask import request, jsonify, abort, redirect, url_for, render_template, send_file, Blueprint
 from flaskapp import db, bcrypt, q
 # from flaskapp.tasks import execute_node
-from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel, workflow_schema
+from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel, workflow_schema, workflows_schema
 from flaskapp.dag_solver import dag_solver
 # from flaskapp.tasks import execute_node
 from flask_login import login_user, current_user, logout_user
@@ -19,10 +19,12 @@ def execute_node(item):
     time.sleep(2)
     return len(item)
 
+
 # routes
 @api_bp.route('/api/v1/', methods=['GET'])
 def home():
     return 'Hello', 200
+
 
 # create calls for user database
 @api_bp.route('/api/v1/register', methods=['POST'])
@@ -172,23 +174,31 @@ def publish():
         abort(403, description="Not logged in")
 
 
-@api_bp.route('/api/v1/workflow/update/<file_id>', methods=['PUT'])
-def update_file():
-    if current_user.is_authenticated:
-        pass
-
-
 @api_bp.route('/api/v1/workflow/seefile/<id>', methods=['GET'])
 def see_file(id):
     chosen_workflow = WorkflowModel.query.get(id)
     return workflow_schema.jsonify(chosen_workflow)
+
+@api_bp.route('/api/v1/workflow/seeAllfile', methods=['GET'])
+def see_All_file():
+    chosen_workflows = WorkflowModel.query.all()
+    return workflows_schema.jsonify(chosen_workflows)
+
+
+@api_bp.route('/api/v1/workflow/download/<file_id>', methods=['GET'])
+def download_workflow(file_id):
+    if current_user.is_authenticated:
+        chosen_workflow = WorkflowModel.query.filter_by(file_id=file_id).first()
+        return send_file(BytesIO(chosen_workflow.content), as_attachment=True, attachment_filename="download.nc")
+    else:
+        abort(403, description="Not logged in")
 
 
 @api_bp.route('/api/v1/workflow/get/<file_id>', methods=['GET'])
 def get_workflow(file_id):
     if current_user.is_authenticated:
         chosen_workflow = WorkflowModel.query.filter_by(file_id=file_id).first()
-        return send_file(BytesIO(chosen_workflow.content), as_attachment=True, attachment_filename="download.nc")
+        return workflow_schema.jsonify(chosen_workflow)
     else:
         abort(403, description="Not logged in")
 
