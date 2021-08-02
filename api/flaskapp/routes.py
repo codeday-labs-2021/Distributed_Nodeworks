@@ -1,14 +1,21 @@
 from flask import request, jsonify, abort, redirect, url_for, render_template, send_file, Blueprint
-from flaskapp import db, bcrypt, q, r, conn, listen
+from flaskapp import db, bcrypt, q, r
 from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel, workflow_schema, workflows_schema
 from flaskapp.dag_solver import dag_solver_flow
 from flask_login import login_user, current_user, logout_user
 import uuid
+import os
+import redis
 from io import BytesIO
 import json
 import time
 from rq import Worker, Queue, Connection
+from rq.command import send_kill_horse_command
+from rq.worker import Worker, WorkerStatus
 
+# listen = ['default']
+# redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
+# conn = redis.from_url(redis_url)
 
 api_bp = Blueprint("api", __name__)
 
@@ -235,14 +242,22 @@ def test_queue():
 
 
 @api_bp.route('/api/v1/queue/clear')
-def test_queue():
+def clear_queue():
     q.empty()
     return json.dumps(f"Queue emptied. There is {len(q)} tasks right now.")
 
 
 @api_bp.route('/api/v1/queue/status')
-def test_queue():
+def status_queue():
     return json.dumps(f"There is {len(q)} tasks right now.")
+
+# the problem
+@api_bp.route('/api/v1/runners/register')
+def register_runner():
+    with Connection(r):
+        worker = Worker([q], name="runner", connection=r)
+        worker.work()
+        return "Worker started.", 200
 
 
 @api_bp.route('/api/v1/runners/status')
@@ -250,5 +265,14 @@ def status_runner():
     workers = Worker.all(connection=r)
     report = ''
     for worker in workers:
-        report += f"Runner status: name = {worker.name}, queues = {worker.queues}, state = {worker.state}, successful job counts = {worker.successful_job_count}, current job = {worker.current_job}"
-    return 200
+        report += f"Runner status: name = {worker.name}, queues = {worker.queues}, state = {worker.state}, successful job counts = {worker.successful_job_count}, current job = {worker.current_job} \n"
+    return report, 200
+
+
+@api_bp.route('/api/v1/runners/cancel')
+def cancel_runner_job():
+    workers = Worker.all(connection=r)
+    for worker in workers:
+        if worker.state == WorkerStatus.BUSY:
+            send_kill_horse_command(r, worker.name)
+    return "Runners' jobs are cancelled.", 200
