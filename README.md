@@ -1,8 +1,39 @@
 # Getting Started with Create React App
 
+<<<<<<< HEAD
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
+=======
+## Prerequisites
+Familiarity with intermediate to advanced Python, Git, database server concepts and other tools like Flask.
+## How to run
+- Suggest using virutal environment
+### Npm Install: 
+- npm install react-bootstrap
+- npm install react-flow-renderer
+- npm install react-router-dom
+- npm install axios
+- npm install localforage
+### For the api--(still working on api)
+- pip install flask
+- pip install flask-sqlalchemy
+- pip install flask-wtf
+- pip install flask-cors
+- pip install flask_marshmallow
+- pip install flask_bcrypt
+- pip install flask_login
+- pip install redis
+- pip install flask_rq2
+- 
+### Features
+Login, Signup, Homepage Ui
+
+### How to run
+Create a react app, copy src folder into react app, api folder is flask backend so put that into your react folder as well. 
+Start react app, using npm run start, and start flask server as well, using flask run. 
+### Contributors
+>>>>>>> dc526f6f413caf84a5c6555071169b6015e70d76
 
 In the project directory, you can run:
 
