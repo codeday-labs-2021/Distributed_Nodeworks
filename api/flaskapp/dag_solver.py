@@ -1,29 +1,5 @@
 import json
 
-# f = open('node_ex.nc', "r")
-# data = json.loads(f.read())
-
-class Node:
-    def __init__(self, name, in_neighbours, out_neighbours):
-        self.name = name
-        self.out_neighbours = out_neighbours
-        self.in_neighbours = in_neighbours
-
-    def set_in_neighbours(self, *nodes):
-        for node in nodes:
-            self.in_neighbours.append(node)
-
-    def set_out_neighbours(self, *nodes):
-        for node in nodes:
-            self.out_neighbours.append(node)
-
-    def set_name(self, value):
-        self.name = value
-
-    def __repr__(self):
-        return self.name
-
-
 def dag_solver(json_object):
 
     all_nodes = {}

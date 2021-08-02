@@ -91,9 +91,20 @@ const DnDFlow = () => {
       node: elements
     }
     console.log(data)
-    axios.put('http://localhost:5000/api/v1/workflow/publish/'+localStorage.getItem('token'),data,{withCredentials: true}).then(
+    // HOW TO SAVE
+    // axios.put('http://localhost:5000/api/v1/workflow/publish/'+localStorage.getItem('token'),data,{withCredentials: true}).then(
+    //   res=>{
+    //     console.log("HELLO" + res)
+    // }
+    // ).catch(
+    //   err =>{
+    //       console.log(err);
+    //   }
+    // )
+    //HOW TO SAVE END
+    axios.get('http://localhost:5000/api/v1/workflow/getOwner/'+localStorage.getItem('username')).then(
       res=>{
-        console.log("HELLO" + res)
+        console.log(res['data'].length)
     }
     ).catch(
       err =>{

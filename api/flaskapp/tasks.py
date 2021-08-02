@@ -1,11 +1,9 @@
 import time
 from flask import Flask
-from flask_rq2 import RQ
+# from flask_rq2 import RQ
 
-rq = RQ()
-@rq.job
-
-def execute_node(node):
-    node = str(node)
-    time.sleep(1)
-    return node
+def whatever(item):
+    print("task running...")
+    item = str(item)
+    time.sleep(2)
+    return len(item)

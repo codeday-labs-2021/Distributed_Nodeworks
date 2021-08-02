@@ -15,7 +15,7 @@ const Nav = () =>{
                     <div className = "collapse navbar-collapse">
                         <ul className="navbar-nav ms-auto">
                             <li className="nav-item">
-                            <a href="/workflow" className = "nav-link" onClick={logout}>Workflows</a>
+                            <a href="/workflow" className = "nav-link">Workflows</a>
                             </li>
                             <li className="nav-item">
                             <a href="/status" className = "nav-link" onClick={logout}>Status</a>

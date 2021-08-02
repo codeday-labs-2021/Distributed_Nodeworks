@@ -6,6 +6,7 @@ import Nav from './Component/Nav';
 import {BrowserRouter, Route} from 'react-router-dom'
 import signup from './Pages/Signup';
 import Home from './Pages/home';
+import Workflow from './Pages/workflow'
 import axios from 'axios';
 export default class App extends Component{
   state ={}
@@ -29,12 +30,13 @@ export default class App extends Component{
   render(){
     return (
       <div className="App">
-        <Nav/>
+        <Nav user={this.state.user } key = {this.state.key}/>
         <BrowserRouter>
           <main className="form-signin">
             <Route path ="/signup/" exact component={signup}/>
             <Route path ="/login/" exact component={Login}/>
           </main>
+          <Route path ="/workflow/" exact component={Workflow}/>
           <Route path="/" exact component={()=> <Home user={this.state.user } key = {this.state.key}/> }/>
         </BrowserRouter>
       </div>
