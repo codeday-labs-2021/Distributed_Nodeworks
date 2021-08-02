@@ -1,17 +1,9 @@
 from flask import request, jsonify, abort, redirect, url_for, render_template, send_file, Blueprint
-<<<<<<< HEAD
 from flaskapp import db, bcrypt, q
 # from flaskapp.tasks import execute_node
 from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel, workflow_schema, workflows_schema
 from flaskapp.dag_solver import dag_solver_flow
 # from flaskapp.tasks import execute_node
-=======
-from flaskapp import db, bcrypt
-from flaskapp.tasks import execute_node
-from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel, workflow_schema,workflows_schema
-from flaskapp.dag_solver import dag_solver
-from flaskapp.tasks import execute_node
->>>>>>> dc526f6f413caf84a5c6555071169b6015e70d76
 from flask_login import login_user, current_user, logout_user
 import uuid
 from io import BytesIO
@@ -20,7 +12,6 @@ import time
 
 api_bp = Blueprint("api", __name__)
 
-<<<<<<< HEAD
 # queue task handler
 def execute_node(item):
     print("task running...")
@@ -30,62 +21,18 @@ def execute_node(item):
 
 
 # routes
-=======
->>>>>>> dc526f6f413caf84a5c6555071169b6015e70d76
 @api_bp.route('/api/v1/', methods=['GET'])
 def home():
     return 'Hello', 200
 
-<<<<<<< HEAD
-
-# create calls for user database
-@api_bp.route('/api/v1/register', methods=['POST'])
-=======
 # create calls for user database
 @api_bp.route('/api/v1/register', methods=['GET','POST'])
->>>>>>> dc526f6f413caf84a5c6555071169b6015e70d76
 def register():
     if current_user.is_authenticated:
         return jsonify(
             success = True,
             user = current_user.is_authenticated
         )
-<<<<<<< HEAD
-    else:
-        if (request.method == 'POST'):
-
-            # get data
-            user_data = request.get_json(force=True)
-
-            # extract info
-            username = user_data['username']
-            email = user_data['email']
-            password = user_data['password']
-            hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-            role = user_data['role']
-
-            # check validation:
-            search_user_by_name = UserModel.query.filter_by(username=username).first()
-            if search_user_by_name:
-                abort(409, description="This username already exists")
-            
-            search_user_by_email = UserModel.query.filter_by(email=email).first()
-            if search_user_by_email:
-                abort(409, description="This email is already used")
-
-            # assign random unique id
-            user_key = uuid.uuid4().hex
-
-            # add the user
-            new_user = UserModel(user_key=user_key, username=username, email=email, password=hashed_password, role=role)
-            db.session.add(new_user)
-            db.session.commit()
-
-            return 'user created successfully', 201
-
-
-@api_bp.route('/api/v1/login', methods=['POST'])
-=======
 
     if (request.method == 'POST'):
 
@@ -123,33 +70,12 @@ def register():
 
 
 @api_bp.route('/api/v1/login', methods=['GET','POST'])
->>>>>>> dc526f6f413caf84a5c6555071169b6015e70d76
 def login():
     if current_user.is_authenticated:
         return jsonify(
             success = True,
             user = current_user.is_authenticated
         )
-<<<<<<< HEAD
-    else:
-        if (request.method == 'POST'):
-
-            # get data
-            user_data = request.get_json(force=True)
-
-            # extract info
-            username = user_data['username']
-            email = user_data['email']
-            password = user_data['password']
-
-            # query the database and check password
-            user = UserModel.query.filter_by(email=email).first()
-            if user and bcrypt.check_password_hash(user.password, password.encode('utf-8')):
-                login_user(user, remember=True)
-                return 'Log in successfully', 200
-            else:
-                return 'Not successful, wrong password or email', 403
-=======
 
     if (request.method == 'POST'):
 
@@ -169,7 +95,6 @@ def login():
         else:
             print("HELLO NOT SUCCESSFUL")
             return 'Not successful, wrong password or email', 403
->>>>>>> dc526f6f413caf84a5c6555071169b6015e70d76
 
 
 @api_bp.route('/api/v1/logout')
@@ -181,10 +106,6 @@ def logout():
         abort(403, description="Not logged in")
     
 
-<<<<<<< HEAD
-=======
-
->>>>>>> dc526f6f413caf84a5c6555071169b6015e70d76
 @api_bp.route('/api/v1/getuser/<key>', methods=['GET'])
 def get_user(key):
     user = UserModel.query.filter_by(user_key=key).first()
