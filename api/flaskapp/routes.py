@@ -1,14 +1,14 @@
 from flask import request, jsonify, abort, redirect, url_for, render_template, send_file, Blueprint
-from flaskapp import db, bcrypt, q
-# from flaskapp.tasks import execute_node
+from flaskapp import db, bcrypt, q, r, conn, listen
 from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel, workflow_schema, workflows_schema
 from flaskapp.dag_solver import dag_solver_flow
-# from flaskapp.tasks import execute_node
 from flask_login import login_user, current_user, logout_user
 import uuid
 from io import BytesIO
 import json
 import time
+from rq import Worker, Queue, Connection
+
 
 api_bp = Blueprint("api", __name__)
 
@@ -16,6 +16,7 @@ api_bp = Blueprint("api", __name__)
 def execute_node(item):
     print("task running...")
     item = str(item)
+    print(item)
     time.sleep(2)
     return len(item)
 
@@ -230,4 +231,24 @@ def execute_file(file_id):
 @api_bp.route('/api/v1/workflow/execute/test_queue')
 def test_queue():
     job = q.enqueue(execute_node, "abcdefghijklmnop")
-    return json.dumps(f"Theres a job {job.id}, {len(q)} tasks right now")
+    return json.dumps(f"Theres a job {job.id}, {len(q)} tasks right now.")
+
+
+@api_bp.route('/api/v1/queue/clear')
+def test_queue():
+    q.empty()
+    return json.dumps(f"Queue emptied. There is {len(q)} tasks right now.")
+
+
+@api_bp.route('/api/v1/queue/status')
+def test_queue():
+    return json.dumps(f"There is {len(q)} tasks right now.")
+
+
+@api_bp.route('/api/v1/runners/status')
+def status_runner():
+    workers = Worker.all(connection=r)
+    report = ''
+    for worker in workers:
+        report += f"Runner status: name = {worker.name}, queues = {worker.queues}, state = {worker.state}, successful job counts = {worker.successful_job_count}, current job = {worker.current_job}"
+    return 200
