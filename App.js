@@ -137,7 +137,6 @@ const DnDFlow = () => {
   const onSelectorNode = useCallback(() => {
     const SelectorNode = {
       id: getId(),
-      id: '2',
         type: 'selectorNode',
         data: { onChange: onChange, color: initBgColor },
         style: { border: '1px solid #777', padding: 10 },
@@ -152,6 +151,10 @@ const DnDFlow = () => {
     let ele = JSON.stringify(elements)
     console.log(ele)
   }
+
+  // const onSaveFileName = () =>{
+    
+  // }
 
   return (
     <div className="dndflow">
@@ -187,6 +190,13 @@ const DnDFlow = () => {
             />
 
             <Controls />
+            <div>
+              <form className="file_name" >
+                <label>File name:</label>
+                <input type="text" name="fname"></input>
+                {/* <button onClick={onSaveFileName}>Save file name</button> */}
+              </form>
+            </div>
             <div className="save__controls">
               <button onClick={onSave}>Save</button>
               <button onClick={onSelectorNode}>Add Selector Node</button>
