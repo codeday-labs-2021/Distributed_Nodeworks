@@ -1,10 +1,4 @@
 from flaskapp import create_all
-# how I view the data table:
-# enter virtual environment 
-# >>> python
-# >>> from api import UserModel
-# >>> UserModel.query.all()
-# or
 # go to Postman and send the api request from there
 
 app = create_all()

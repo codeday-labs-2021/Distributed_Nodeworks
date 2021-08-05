@@ -2,6 +2,7 @@ from flask import request, jsonify, abort, redirect, url_for, render_template, s
 from flaskapp import db, bcrypt, q, r
 from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel, workflow_schema, workflows_schema
 from flaskapp.dag_solver import dag_solver_flow
+from flaskapp.tasks import whatever
 from flask_login import login_user, current_user, logout_user
 import uuid
 import os
@@ -14,8 +15,8 @@ from rq.command import send_kill_horse_command
 from rq.worker import Worker, WorkerStatus
 
 # listen = ['default']
-# redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
-# conn = redis.from_url(redis_url)
+redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
+conn = redis.from_url(redis_url)
 
 api_bp = Blueprint("api", __name__)
 
@@ -237,7 +238,7 @@ def execute_file(file_id):
 
 @api_bp.route('/api/v1/workflow/execute/test_queue')
 def test_queue():
-    job = q.enqueue(execute_node, "abcdefghijklmnop")
+    job = q.enqueue(whatever, "abcdefghijklmnop")
     return json.dumps(f"Theres a job {job.id}, {len(q)} tasks right now.")
 
 
@@ -251,13 +252,12 @@ def clear_queue():
 def status_queue():
     return json.dumps(f"There is {len(q)} tasks right now.")
 
+
 # the problem
 @api_bp.route('/api/v1/runners/register')
 def register_runner():
-    with Connection(r):
-        worker = Worker([q], name="runner", connection=r)
-        worker.work()
-        return "Worker started.", 200
+    worker = Worker([q], name="iefoijslmclkm", connection=r)
+    return "Worker started. Name is {}".format(__name__), 200    
 
 
 @api_bp.route('/api/v1/runners/status')
@@ -265,7 +265,7 @@ def status_runner():
     workers = Worker.all(connection=r)
     report = ''
     for worker in workers:
-        report += f"Runner status: name = {worker.name}, queues = {worker.queues}, state = {worker.state}, successful job counts = {worker.successful_job_count}, current job = {worker.current_job} \n"
+        report += f"Runner status: name = {worker.name}, queues = {worker.queues}, state = {worker.state}, successful job counts = {worker.successful_job_count}\n"
     return report, 200
 
 

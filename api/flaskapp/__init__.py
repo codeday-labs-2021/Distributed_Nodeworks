@@ -36,3 +36,4 @@ def create_all(config_class=Config):
 
 
 from flaskapp import routes
+from flaskapp import tasks
