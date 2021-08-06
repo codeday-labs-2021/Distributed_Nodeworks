@@ -1,0 +1,45 @@
+.workflow{
+    margin-top: 3em;
+}
+.create{
+    width:20em;
+    height:3em;
+    margin-bottom: 2em;
+    border-style: solid;
+    border-bottom-right-radius: 2em;
+    justify-content: center;
+    user-select: none;
+    border-color: black;
+    background-color: white;
+}
+.workflowUnorderList{
+    list-style-type: none;
+    width: 98.5%;
+}
+.workflowList{
+    margin:auto;
+    width:20em;
+    display:flex;
+    height:3em;
+    margin-bottom: 2em;
+    border-style: solid;
+    /* border-radius: 20%; */
+    border-bottom-left-radius: 2em;
+    justify-content: center;
+    /* user-select: none; */
+}
+.workflowName{
+    
+    margin-top: .4em;
+    /* width:60% */
+}
+.workflowList:hover{
+    background-color: #08f300;
+    -webkit-transition: background-color 200ms linear;
+    -ms-transition: background-color 200ms linear;
+    transition: background-color 200ms linear;
+}
+/* .workflowBtn{
+    margin-top: .3em;
+    height:70%;
+} */

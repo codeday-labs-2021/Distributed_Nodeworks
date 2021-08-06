@@ -13,8 +13,8 @@ class Login extends Component{
         }
         axios.post('http://localhost:5000/api/v1/login',data).then(
             res=>{
-                localStorage.setItem('token',res['data']['user_key']);
-                localStorage.setItem('username',res['data']['username'])
+                sessionStorage.setItem('token',res['data']['user_key']);
+                sessionStorage.setItem('username',res['data']['username'])
                 // if(res['status'] == 200){
                 //     this.setState({ redirect: "/home" });
                 // }
@@ -33,7 +33,7 @@ class Login extends Component{
     }
     render() {
         if(this.state.loggedIn){
-            return <Redirect to={'/'} />
+            return <Redirect to={'/workflow'} />
         }
         return(
             <div className="wrapper fadeInDown">

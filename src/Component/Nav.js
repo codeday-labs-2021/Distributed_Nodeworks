@@ -3,11 +3,11 @@ import React from 'react';
 function logout(){
     console.log("LOGGINOUT")
     
-    localStorage.clear()
+    sessionStorage.clear()
 }
 const Nav = () =>{
-    if(localStorage.getItem('token')!=null){
-        console.log(localStorage.getItem('token'))
+    if(sessionStorage.getItem('token')!=null){
+        console.log(sessionStorage.getItem('token'))
         return(
             <nav className = "navbar navbar-expand navbar-dark bg-dark">
                 <div className = "container">

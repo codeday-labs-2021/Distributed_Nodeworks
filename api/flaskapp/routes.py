@@ -140,9 +140,9 @@ def workflow_hello():
 
 @api_bp.route('/api/v1/workflow/publish/<key>', methods=['POST', 'GET', 'PUT'])
 def publish(key):
-    if current_user.is_authenticated:
-    # user = UserModel.query.filter_by(user_key=key).first()
-    # if user != None:
+    # if current_user.is_authenticated:
+    user = UserModel.query.filter_by(user_key=key).first()
+    if user != None:
         if request.method == 'POST':
             file = request.files['file']
 
@@ -163,12 +163,12 @@ def publish(key):
             file_data = request.get_json(force=True)
             print(file_data['node'])
             # file_name = file_data["file_name"]
-            file_name = "test2"
+            file_name = "test5"
             # print(user.username)
             owner = file_data['user']
             file_content = str(file_data["node"])
             # file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
-            file_id = "testNodeFileID5"
+            file_id = "testNodeFileID8"
             search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id)
             print(search_file_by_id)
             new_file = WorkflowModel(owner=owner, name=file_name, content=file_content, file_id=file_id)

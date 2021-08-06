@@ -16,15 +16,9 @@ localforage.config({
 });
 
 const flowKey = 'example-flow';
-
-const initialElements = [
-  {
-    id: '1',
-    type: 'input',
-    data: { label: 'input node' },
-    position: { x: 250, y: 5 },
-  },
-];
+const hi = JSON.parse(sessionStorage.getItem('content'))
+const initialElements = hi
+console.log(hi)
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
@@ -92,25 +86,25 @@ const DnDFlow = () => {
     }
     console.log(data)
     // HOW TO SAVE
-    // axios.put('http://localhost:5000/api/v1/workflow/publish/'+localStorage.getItem('token'),data,{withCredentials: true}).then(
-    //   res=>{
-    //     console.log("HELLO" + res)
-    // }
-    // ).catch(
-    //   err =>{
-    //       console.log(err);
-    //   }
-    // )
-    //HOW TO SAVE END
-    axios.get('http://localhost:5000/api/v1/workflow/getOwner/'+localStorage.getItem('username')).then(
+    axios.put('http://localhost:5000/api/v1/workflow/publish/'+localStorage.getItem('token'),data).then(
       res=>{
-        console.log(res['data'].length)
+        console.log("HELLO" + res)
     }
     ).catch(
       err =>{
           console.log(err);
       }
     )
+    //HOW TO SAVE END
+    // axios.get('http://localhost:5000/api/v1/workflow/getOwner/'+localStorage.getItem('username')).then(
+    //   res=>{
+    //     console.log(res['data'].length)
+    // }
+    // ).catch(
+    //   err =>{
+    //       console.log(err);
+    //   }
+    // )
   }
   const onRestore = useCallback(() => {
     const restoreFlow = async () => {

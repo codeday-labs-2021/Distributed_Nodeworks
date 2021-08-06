@@ -13,10 +13,10 @@ export default class App extends Component{
   componentDidMount= ()=>{
     const config = {
       headers:{
-        Authorization: 'Bearer ' + localStorage.getItem('token')
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
       }
     }
-    axios.get('http://localhost:5000/api/v1/getuser/'+localStorage.getItem('token'),config).then(
+    axios.get('http://localhost:5000/api/v1/getuser/'+sessionStorage.getItem('token'),config).then(
       res=>{
         console.log(res['data']['username'])
         this.setState({user:res['data']['username'],
