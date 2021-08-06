@@ -18,3 +18,14 @@
     padding: 10px 24px;
     text-align: center;
   }
+
+  .save__controls button:hover {
+    margin-left: 5px;
+    background-color: rgb(66, 109, 110);
+    cursor: pointer;
+    border: 2px solid rgb(50, 83, 83);
+    color: white;
+    border-radius: 8px;
+    padding: 10px 24px;
+    text-align: center;
+  }

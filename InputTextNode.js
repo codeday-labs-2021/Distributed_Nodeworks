@@ -13,15 +13,10 @@ export default memo(({ data, isConnectable }) => {
         onConnect={(params) => console.log('handle onConnect', params)}
         isConnectable={isConnectable}
       />
-      <div className = "colorNode">
-        Custom Color Picker Node: <strong>{data.color}</strong>
+      <div className = "textNode">
+        <input type="text" name="nodeText" placeholder="text"/>
       </div>
-      <input
-        className="nodrag"
-        type="color"
-        onChange={data.onChange}
-        defaultValue={data.color}
-      />
+      
       <Handle
         type="source"
         position="right"

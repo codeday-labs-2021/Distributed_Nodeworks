@@ -12,6 +12,7 @@ import localforage from 'localforage';
 
 //stop undo
 import ColorSelectorNode from './ColorSelectorNode';
+import InputTextNode from './InputTextNode';
 import './index.css';
 
 import './Save.css';
@@ -28,6 +29,7 @@ const connectionLineStyle = { stroke: '#fff' };
 const snapGrid = [20, 20];
 const nodeTypes = {
   selectorNode: ColorSelectorNode,
+  textNode:InputTextNode,
 };
 
 localforage.config({
@@ -90,10 +92,11 @@ const DnDFlow = () => {
 
   },[setElements]);
 
+
   const onChange = (event) => {
     setElements((els) =>
       els.map((e) => {
-        if (isEdge(e) || e.id !== '2') {
+        if (isEdge(e)) {
           return e;
         }
 
@@ -137,14 +140,26 @@ const DnDFlow = () => {
   const onSelectorNode = useCallback(() => {
     const SelectorNode = {
       id: getId(),
-        type: 'selectorNode',
-        data: { onChange: onChange, color: initBgColor },
-        style: { border: '1px solid #777', padding: 10 },
-        position: { x: 300, y: 50 },
+      type: 'selectorNode',
+      data: { onChange: onChange, color: initBgColor },
+      style: { border: '1px solid #777', padding: 10 },
+      position: { x: 300, y: 50 },
     };
     //elements are being added
     setElements((es) => es.concat(SelectorNode));
   },[setElements])
+
+  // const onTextNode = useCallback(() => {
+  //   const TextNode = {
+  //     id: getId(),
+  //       type: 'textNode',
+  //       data,
+  //       style: { border: '1px solid #777', padding: 10 },
+  //       position: { x: 300, y: 50 },
+  //   };
+    //elements are being added
+  //   setElements((es) => es.concat(textNode));
+  // },[setElements])
 
   const onExit = () => {
     console.log(elements)
@@ -182,6 +197,7 @@ const DnDFlow = () => {
                 if (n.type === 'selectorNode') return bgColor;
                 if (n.type === 'output') return '#ff0072';
                 if (n.type === 'default') return '#1a192b';
+                if(n.type === 'textNode') return '#00ff40' ;
               }}
               nodeColor={(n) => {
                 if (n.type === 'selectorNode') return bgColor;
@@ -192,9 +208,8 @@ const DnDFlow = () => {
             <Controls />
             <div>
               <form className="file_name" >
-                <label>File name:</label>
-                <input type="text" name="fname"></input>
-                {/* <button onClick={onSaveFileName}>Save file name</button> */}
+                <input className="enterfile" type="text" name="fname" placeholder="Enter a file name"></input>
+                <button className = "savefile">Save file name</button>
               </form>
             </div>
             <div className="save__controls">
