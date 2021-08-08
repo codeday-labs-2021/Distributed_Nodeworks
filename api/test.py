@@ -1,7 +1,7 @@
 import requests
 import json
 
-BASE = "http://localhost:5000/api/v1/"
+BASE = "http://192.168.1.8:5000/api/v1/"
 
 user = {
     "username": "Palo Santo",
@@ -13,8 +13,8 @@ user = {
 # res1 = requests.post(BASE + "register", user)
 # print(res1)
 # res2 = requests.post(BASE + "login", json.dumps(user))
-res0 = requests.get(BASE + "getallusers")
-print(res0.json())
+res0 = requests.get(BASE + "runners/register")
+# print(res0.json())
 # owenry-hellport-download(1)
 # response = requests.get(BASE + "workflow/execute/test_queue")
 # print(response.json())

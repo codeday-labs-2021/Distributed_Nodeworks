@@ -4,6 +4,8 @@ from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel,
 from flaskapp.dag_solver import dag_solver_flow
 from flaskapp.tasks import whatever
 from flask_login import login_user, current_user, logout_user
+from flaskapp.worker_proc import run_worker
+import asyncio
 import uuid
 import os
 import redis
@@ -11,12 +13,8 @@ from io import BytesIO
 import json
 import time
 from rq import Worker, Queue, Connection
-from rq.command import send_kill_horse_command
+from rq.command import send_kill_horse_command, send_shutdown_command
 from rq.worker import Worker, WorkerStatus
-
-# listen = ['default']
-redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
-conn = redis.from_url(redis_url)
 
 api_bp = Blueprint("api", __name__)
 
@@ -256,8 +254,8 @@ def status_queue():
 # the problem
 @api_bp.route('/api/v1/runners/register')
 def register_runner():
-    worker = Worker([q], name="iefoijslmclkm", connection=r)
-    return "Worker started. Name is {}".format(__name__), 200    
+    message = asyncio.run(run_worker())
+    return "Runner has been registered and worked", 200    
 
 
 @api_bp.route('/api/v1/runners/status')
@@ -276,3 +274,11 @@ def cancel_runner_job():
         if worker.state == WorkerStatus.BUSY:
             send_kill_horse_command(r, worker.name)
     return "Runners' jobs are cancelled.", 200
+
+
+@api_bp.route('/api/v1/runners/shutdown')
+def cancel_worker():
+    workers = Worker.all(connection=r)
+    for worker in workers:
+        send_shutdown_command(r, worker.name)
+    return "Runners are shutdown", 200
