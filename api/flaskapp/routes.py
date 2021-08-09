@@ -221,13 +221,10 @@ def get_User_workflow(owner):
 
 @api_bp.route('/api/v1/workflow/delete/<file_id>', methods=['GET'])
 def delete_workflow(file_id):
-    if current_user.is_authenticated:
-        chosen_workflow = WorkflowModel.query.filter_by(file_id=file_id).first()
-        db.session.delete(chosen_workflow)
-        db.session.commit()
-        return 'Delete workflow successfully', 200
-    else:
-        abort(403, description="Not logged in")
+    chosen_workflow = WorkflowModel.query.filter_by(file_id=file_id).first()
+    db.session.delete(chosen_workflow)
+    db.session.commit()
+    return 'Delete workflow successfully', 200
 
 
 @api_bp.route('/api/v1/workflow/execute/<file_id>')

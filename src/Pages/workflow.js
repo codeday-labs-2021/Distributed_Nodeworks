@@ -12,22 +12,38 @@ class workflow extends Component{
         window.location = "/";
     }
     workflowFiles(content, name, fileID, owner,data){
-        console.log(data);
-        const displayID = (content)=>{
-            console.log("CONTENT " +content);
-            let test = JSON.stringify(eval('('+content+')'));
-            console.log("HELP " + test);
-            sessionStorage.setItem("content",test);
+        // console.log(data);
+        const displayID = (content,item)=>{
+            // console.log("CONTENT " +content);
+            let nodes = JSON.stringify(eval('('+content+')'));
+            const numOfNodes=JSON.parse(nodes)
+            // console.log("TEST " + Object.keys(test1).length)
+            sessionStorage.setItem("content",nodes);
+            sessionStorage.setItem("content-length",Object.keys(numOfNodes).length)
             window.location = "/";
         }
-        return <div>
+        const deleteWorkFlow=(file_id)=>{
+            axios.get('http://localhost:5000/api/v1/workflow/delete/'+file_id).then(
+            res=>{
+                console.log(res)
+            }
+            ).catch(
+            err =>{
+                console.log(err);
+            }
+            )
+            window.location.reload();
+        }
+        return <div class = "LIST">
             <ul class = "workflowUnorderList">
                 {data.map((item)=>
-                <li class = "workflowList" id = {item.file_id} onClick={() => displayID(item.content)}>
-                    <h5 class = "workflowName" id = {item.file_id}>{item.name} </h5>
-                    {/* <button class ="workflowBtn">
-                        Open
-                    </button> */}
+                <li class = "workflowList" id = {item.file_id}>
+                    <div class = "workflowName" onClick={() => displayID(item.content)}>
+                        <h5 class = "Name" id = {item.file_id} >{item.name} </h5>
+                    </div>
+                    <button class ="workflowBtn" onClick={() => deleteWorkFlow(item.file_id)}>
+                        X
+                    </button>
                 </li>)}
             </ul>
         </div>
@@ -59,6 +75,9 @@ class workflow extends Component{
         this.getWorkflow()
     }
     render(){
+        if(sessionStorage.getItem('username')==null){
+            window.location = "/login";
+        }
         return (
             <div class="workflow">
                 <h4>WORKFLOWS</h4>

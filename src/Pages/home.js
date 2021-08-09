@@ -16,14 +16,15 @@ localforage.config({
 });
 
 const flowKey = 'example-flow';
-const hi = JSON.parse(sessionStorage.getItem('content'))
+const nodes = JSON.parse(sessionStorage.getItem('content'))
 let initialElements = []
-if(hi!= null){
-  initialElements = hi
-}
-console.log(hi)
-
 let id = 0;
+if(nodes!= null){
+  initialElements = nodes
+  id = sessionStorage.getItem('content-length')
+}
+
+
 const getId = () => `dndnode_${id++}`;
 
 const DnDFlow = () => {
@@ -67,7 +68,7 @@ const DnDFlow = () => {
       },
       data: { label: `${type} node` },
     };
-
+    console.log(id)
     setElements((es) => es.concat(newNode));
     console.log(newNode.id);
   },[setElements]);
@@ -121,6 +122,9 @@ const DnDFlow = () => {
 
     restoreFlow();
   }, [setElements]);
+  if(sessionStorage.getItem('username')==null){
+    window.location = "/login";
+  }
   return (
     <div className="dndflow">
       <ReactFlowProvider>

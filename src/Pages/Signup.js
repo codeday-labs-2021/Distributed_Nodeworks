@@ -16,7 +16,7 @@ class signup extends Component{
         else{
             axios.post('http://localhost:5000/api/v1/register',data).then(
                 res=>{
-                    console.log(res)
+                    window.location = "/workflow";
                 }
             ).catch(
                 err =>{
