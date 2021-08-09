@@ -7,6 +7,10 @@ import mount from './home'
 import DnDFlow from './home';
 class workflow extends Component{
     state = {}
+    createWork(){
+        sessionStorage.setItem("content",null);
+        window.location = "/";
+    }
     workflowFiles(content, name, fileID, owner,data){
         console.log(data);
         const displayID = (content)=>{
@@ -59,7 +63,7 @@ class workflow extends Component{
             <div class="workflow">
                 <h4>WORKFLOWS</h4>
 
-                <button class = "create"> 
+                <button class = "create" onClick ={() => this.createWork()}> 
                     Create Workflow
                 </button>
 

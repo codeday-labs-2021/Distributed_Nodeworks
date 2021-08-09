@@ -17,7 +17,10 @@ localforage.config({
 
 const flowKey = 'example-flow';
 const hi = JSON.parse(sessionStorage.getItem('content'))
-const initialElements = hi
+let initialElements = []
+if(hi!= null){
+  initialElements = hi
+}
 console.log(hi)
 
 let id = 0;
