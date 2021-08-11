@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
 }
 
@@ -35,4 +35,113 @@
   to {
     transform: rotate(360deg);
   }
+} */
+
+.dndflow {
+  flex-direction: column;
+  display: flex;
+  height: 100%;
+}
+
+.dndflow aside {
+  border-right: 1px solid #eee;
+  padding: 15px 10px;
+  font-size: 12px;
+  background: #fcfcfc;
+}
+
+.dndflow aside .description {
+  margin-bottom: 10px;
+}
+
+.dndflow .dndnode {
+  height: 20px;
+  padding: 4px;
+  border: 1px solid #1a192b;
+  border-radius: 2px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: grab;
+}
+
+.dndflow .dndnode.input {
+  border-color: #0041d0;
+}
+
+.dndflow .dndnode.output {
+  border-color: #ff0072;
+}
+
+.dndnode.text {
+  border-color: #00ff40;
+  background-color: white;
+}
+
+.react-flow__node-text {
+  padding: 10px;
+  border-radius: 3px;
+  width: 150px;
+  font-size: 12px;
+  color: #222;
+  text-align: center;
+  border-width: 1px;
+  border-style: solid;
+  background-color: white;
+  border-color: #00ff40;
+}
+
+
+.dndflow .reactflow-wrapper {
+  flex-grow: 1;
+  height: 40em;
+}
+
+.colorNode{
+  border-color: #870892;
+}
+
+@media screen and (min-width: 768px) {
+  .dndflow {
+    flex-direction: row;
+  }
+
+  .dndflow aside {
+    width: 20%;
+    max-width: 250px;
+  }
+}
+
+.file_name{
+  margin-top: 1%;
+  color: white;
+  z-index: 4;
+  position: relative;
+}
+
+.file_name .savefile{
+  margin-left: 0.5%;
+  background-color: cadetblue;
+  cursor: pointer;
+  border: 1px solid rgb(83, 138, 139);
+  color: white;
+  border-radius: 8px;
+  padding: 5px 8px;
+  text-align: center;
+}
+
+.file_name .savefile:hover{
+  margin-left: 0.5%;
+  background-color: rgb(66, 109, 110);
+  cursor: pointer;
+  border: 2px solid rgb(50, 83, 83);
+  color: white;
+  border-radius: 8px;
+  padding: 3px 6px;
+  text-align: center;
+}
+
+.file_name .enterfile{
+  margin-left: 1%;
 }
