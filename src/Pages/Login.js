@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import { Redirect } from "react-router-dom";
+// import curry from "./img/"
 class Login extends Component{
     state = {}
     handleSubmit = e => {
@@ -42,7 +43,7 @@ class Login extends Component{
 
                     <!-- Icon --> */}
                     <div className="fadeIn first">
-                        <img src='./img/stephencurryCircle.png' id="icon" alt="User Icon" />
+                        <img src='./img/user.svg' id="icon" alt="User Icon" />
                     </div>
                     {/* <!-- Login Form --> */}
                     <form onSubmit={this.handleSubmit} method="POST">
