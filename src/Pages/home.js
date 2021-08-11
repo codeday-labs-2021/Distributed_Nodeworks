@@ -129,7 +129,16 @@ const DnDFlow = () => {
     <div className="dndflow">
       <ReactFlowProvider>
         <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+          <div class = "navBar">
+            <input class="fileName" placeholder="Type Filename"></input>
+            <div class = "navObjects">
+              <img src = "./img/save.svg" class= "navBtn" onClick={onSave}></img>
+              <img src = "./img/undo-alt.svg" class= "navBtn" onClick={onRestore}></img>
+              <img src = "./img/cloud-upload-alt.svg" class= "navBtn" onClick={sendWorkflow}></img>
+            </div>
+          </div>
           <ReactFlow
+          
             elements={elements}
             onConnect={onConnect}
             onElementsRemove={onElementsRemove}
@@ -139,9 +148,7 @@ const DnDFlow = () => {
           >
             <Controls />
           </ReactFlow>
-          <button onClick={onSave}>Save</button>
-          <button onClick={onRestore}>Restore</button>
-          <button method onClick={sendWorkflow}>SEE</button>
+
         </div>
         <Sidebar />
       </ReactFlowProvider>

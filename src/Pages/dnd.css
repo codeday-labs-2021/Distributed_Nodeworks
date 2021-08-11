@@ -35,6 +35,34 @@
   border-color: #ff0072;
 }
 
+.dndflow .navBar{
+
+  display: inline-block;
+  width: 100%;
+  background-color: grey;
+}
+.navBar .fileName{
+  margin-top: 0.2%;
+  margin-bottom: 0.2%;
+  width:15%;
+  text-align: center;
+}
+.navBar .navObjects{
+  display:flex;
+  float:right;
+}
+.navObjects .navBtn{
+  background-color: #a05f5f;
+  border:solid;
+  border-color:rgba(228, 228, 228, 0.322);
+  border-width: 2px;
+  height:37px;
+  padding: 2px;
+  filter: invert(1);
+}
+.navBtn:hover{
+  background-color: #d41f1f;
+}
 .dndflow .reactflow-wrapper {
   flex-grow: 1;
   height: 20em;
