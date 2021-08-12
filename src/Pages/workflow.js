@@ -9,16 +9,19 @@ class workflow extends Component{
     state = {}
     createWork(){
         sessionStorage.setItem("content",null);
+        sessionStorage.setItem("contentName",null);
+        sessionStorage.setItem("content-length",null)
         window.location = "/";
     }
     workflowFiles(content, name, fileID, owner,data){
         // console.log(data);
-        const displayID = (content,item)=>{
+        const displayID = (content,name)=>{
             // console.log("CONTENT " +content);
             let nodes = JSON.stringify(eval('('+content+')'));
+            let newname = name;
             const numOfNodes=JSON.parse(nodes)
-            // console.log("TEST " + Object.keys(test1).length)
             sessionStorage.setItem("content",nodes);
+            sessionStorage.setItem("contentName",newname);
             sessionStorage.setItem("content-length",Object.keys(numOfNodes).length)
             window.location = "/";
         }
@@ -38,7 +41,7 @@ class workflow extends Component{
             <ul class = "workflowUnorderList">
                 {data.map((item)=>
                 <li class = "workflowList" id = {item.file_id}>
-                    <div class = "workflowName" onClick={() => displayID(item.content)}>
+                    <div class = "workflowName" onClick={() => displayID(item.content,item.name)}>
                         <h5 class = "Name" id = {item.file_id} >{item.name} </h5>
                     </div>
                     <button class ="workflowBtn" onClick={() => deleteWorkFlow(item.file_id)}>

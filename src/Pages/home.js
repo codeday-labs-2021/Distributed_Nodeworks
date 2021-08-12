@@ -16,18 +16,25 @@ localforage.config({
 });
 
 const flowKey = 'example-flow';
-const nodes = JSON.parse(sessionStorage.getItem('content'))
-let initialElements = []
+const nodes = JSON.parse(sessionStorage.getItem('content'));
+const name = sessionStorage.getItem('contentName');
+// console.log("TEST"+name);
+let initialElements = [];
 let id = 0;
 if(nodes!= null){
-  initialElements = nodes
-  id = sessionStorage.getItem('content-length')
+  initialElements = nodes;
+  id = sessionStorage.getItem('content-length');
 }
 
 
 const getId = () => `dndnode_${id++}`;
 
 const DnDFlow = () => {
+  let fileID = useRef(name)
+  console.log("FILE " + fileID)
+  // if(name!=null){
+  //   fileID.current.value = name
+  // }
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [elements, setElements] = useState(initialElements);
@@ -84,9 +91,11 @@ const DnDFlow = () => {
     // console.log(elements)
     // let ele = JSON.stringify(elements)
     // console.log(ele)
+    fileID.current.value = "ASD"
     const data={
       user: localStorage.getItem('username'),
-      node: elements
+      node: elements,
+      fileId: fileID
     }
     console.log(data)
     // HOW TO SAVE
@@ -130,7 +139,7 @@ const DnDFlow = () => {
       <ReactFlowProvider>
         <div className="reactflow-wrapper" ref={reactFlowWrapper}>
           <div class = "navBar">
-            <input class="fileName" placeholder="Type Filename"></input>
+            <input ref = {fileID} class="fileName" placeholder="Type Filename"></input>
             <div class = "navObjects">
               <img src = "./img/save.svg" class= "navBtn" onClick={onSave}></img>
               <img src = "./img/undo-alt.svg" class= "navBtn" onClick={onRestore}></img>
