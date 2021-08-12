@@ -167,8 +167,7 @@ def publish(key):
             # print(user.username)
             owner = file_data['user']
             file_content = str(file_data["node"])
-            # file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
-            file_id = "testNodeFileID9"
+            file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
             search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id)
             print(search_file_by_id)
             new_file = WorkflowModel(owner=owner, name=file_name, content=file_content, file_id=file_id)

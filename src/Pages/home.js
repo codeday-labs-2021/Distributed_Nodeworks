@@ -27,11 +27,11 @@ if(nodes!= null){
 }
 
 
+
 const getId = () => `dndnode_${id++}`;
 
 const DnDFlow = () => {
-  let fileID = useRef(name)
-  console.log("FILE " + fileID)
+  let fileID = React.createRef()
   // if(name!=null){
   //   fileID.current.value = name
   // }
@@ -91,7 +91,13 @@ const DnDFlow = () => {
     // console.log(elements)
     // let ele = JSON.stringify(elements)
     // console.log(ele)
-    fileID.current.value = "ASD"
+    try{
+      fileID = fileID.current.value
+    }
+    catch{
+      window.alert("ERROR")
+      return
+    }
     const data={
       user: localStorage.getItem('username'),
       node: elements,
@@ -105,6 +111,7 @@ const DnDFlow = () => {
     }
     ).catch(
       err =>{
+          window.alert(err)
           console.log(err);
       }
     )
@@ -134,18 +141,31 @@ const DnDFlow = () => {
   if(sessionStorage.getItem('username')==null){
     window.location = "/login";
   }
+  const loggedIn = () =>{
+    if(nodes!= null){
+      return <div class = "navBar">
+      <input class="fileName" placeholder="Type Filename" value = {name}></input>
+      <div class = "navObjects">
+        <img src = "./img/save.svg" class= "navBtn" onClick={onSave}></img>
+        <img src = "./img/undo-alt.svg" class= "navBtn" onClick={onRestore}></img>
+        <img src = "./img/cloud-upload-alt.svg" class= "navBtn" onClick={sendWorkflow}></img>
+      </div>
+    </div>
+    }
+    return <div class = "navBar">
+      <input ref = {fileID} class="fileName" placeholder="Type Filename"></input>
+      <div class = "navObjects">
+        <img src = "./img/save.svg" class= "navBtn" onClick={onSave}></img>
+        <img src = "./img/undo-alt.svg" class= "navBtn" onClick={onRestore}></img>
+        <img src = "./img/cloud-upload-alt.svg" class= "navBtn" onClick={sendWorkflow}></img>
+      </div>
+    </div>
+  };
   return (
     <div className="dndflow">
       <ReactFlowProvider>
         <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-          <div class = "navBar">
-            <input ref = {fileID} class="fileName" placeholder="Type Filename"></input>
-            <div class = "navObjects">
-              <img src = "./img/save.svg" class= "navBtn" onClick={onSave}></img>
-              <img src = "./img/undo-alt.svg" class= "navBtn" onClick={onRestore}></img>
-              <img src = "./img/cloud-upload-alt.svg" class= "navBtn" onClick={sendWorkflow}></img>
-            </div>
-          </div>
+          {loggedIn()}
           <ReactFlow
           
             elements={elements}

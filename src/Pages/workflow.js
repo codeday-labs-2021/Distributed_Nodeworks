@@ -44,9 +44,7 @@ class workflow extends Component{
                     <div class = "workflowName" onClick={() => displayID(item.content,item.name)}>
                         <h5 class = "Name" id = {item.file_id} >{item.name} </h5>
                     </div>
-                    <button class ="workflowBtn" onClick={() => deleteWorkFlow(item.file_id)}>
-                        X
-                    </button>
+                    <button class="delete" onClick={() => deleteWorkFlow(item.file_id)}><span class='text'>Delete</span><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"/></svg></span></button>
                 </li>)}
             </ul>
         </div>
@@ -82,16 +80,29 @@ class workflow extends Component{
             window.location = "/login";
         }
         return (
-            <div class="workflow">
-                <h4>WORKFLOWS</h4>
+            <div class="area">
+                <h4 class="Title">WORKFLOWS</h4>
+                <div class="workflow">
+                    <button class = "create3" onClick ={() => this.createWork()}> 
+                        Create Workflow
+                    </button>
 
-                <button class = "create" onClick ={() => this.createWork()}> 
-                    Create Workflow
-                </button>
-
-                <div>
-                    {this.state.workflow}
+                    <div>
+                        {this.state.workflow}
+                    </div>
                 </div>
+                <ul class="circles">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
             </div>
             
             

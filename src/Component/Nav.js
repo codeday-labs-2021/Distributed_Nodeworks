@@ -11,7 +11,7 @@ const Nav = () =>{
         return(
             <nav className = "navbar navbar-expand navbar-dark bg-dark">
                 <div className = "container">
-                    <a href = "/" className = "navbar-brand">{localStorage.getItem('username') }'s Nodeworks</a>
+                    <a href = "/" className = "navbar-brand">{sessionStorage.getItem('username') }'s Nodeworks</a>
                     <div className = "collapse navbar-collapse">
                         <ul className="navbar-nav ms-auto">
                             <li className="nav-item">
