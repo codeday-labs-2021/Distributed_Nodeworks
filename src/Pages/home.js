@@ -10,6 +10,8 @@ import Sidebar from './Sidebar.js';
 import axios from 'axios';
 import './dnd.css';
 import localforage from 'localforage';
+import ColorSelectorNode from './InputNode';
+
 localforage.config({
   name: 'react-flow-docs',
   storeName: 'flows',
@@ -29,12 +31,15 @@ if(nodes!= null){
 
 
 const getId = () => `dndnode_${id++}`;
-
+const nodeTypes = {
+  selectorNode: ColorSelectorNode,
+};
 const DnDFlow = () => {
   let fileID = React.createRef()
   // if(name!=null){
   //   fileID.current.value = name
   // }
+  
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [elements, setElements] = useState(initialElements);
@@ -54,6 +59,7 @@ const DnDFlow = () => {
     // event.preventDefault();
     const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
     const type = event.dataTransfer.getData('application/reactflow');
+    console.log(type)
     var position = null;
     // try{
     //   var position = reactFlowInstance.project({
@@ -174,6 +180,7 @@ const DnDFlow = () => {
             onLoad={onLoad}
             onDrop={onDrop}
             onDragOver={onDragOver}
+            nodeTypes={nodeTypes}
           >
             <Controls />
           </ReactFlow>

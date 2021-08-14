@@ -38,7 +38,9 @@
 .dndflow .dndnode.output {
   border-color: #ff0072;
 }
-
+.dndflow .dndnode.Text {
+  border-color: #00ffc8;
+}
 .dndflow .navBar{
 
   display: inline-block;
@@ -83,4 +85,11 @@
     width: 20%;
     max-width: 250px;
   }
+}
+
+.react-flow__node-selectorNode{
+  background-color: white;
+  border:solid;
+  border-radius: 3px;
+  border-width: 1px;
 }
