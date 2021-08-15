@@ -18,8 +18,11 @@ export default () => {
       <div className="dndnode output" onDragStart={(event) => onDragStart(event, 'output')} draggable>
         Output Node
       </div>
-      <div className="dndnode Text" onDragStart={(event) => onDragStart(event, 'selectorNode')} draggable>
-        Text Node
+      <div className="dndnode inputNum" onDragStart={(event) => onDragStart(event, 'selectorNode')} draggable>
+        Number
+      </div>
+      <div className="dndnode outputNode" onDragStart={(event) => onDragStart(event, 'outputNum')} draggable>
+        output Num
       </div>
       {/* <button>Save</button> */}
     </aside>

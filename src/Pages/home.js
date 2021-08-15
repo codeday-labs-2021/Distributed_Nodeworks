@@ -11,6 +11,7 @@ import axios from 'axios';
 import './dnd.css';
 import localforage from 'localforage';
 import ColorSelectorNode from './InputNode';
+import outputNode from './OutputNode'
 
 localforage.config({
   name: 'react-flow-docs',
@@ -33,6 +34,7 @@ if(nodes!= null){
 const getId = () => `dndnode_${id++}`;
 const nodeTypes = {
   selectorNode: ColorSelectorNode,
+  outputNum: outputNode
 };
 const DnDFlow = () => {
   let fileID = React.createRef()
@@ -59,6 +61,9 @@ const DnDFlow = () => {
     // event.preventDefault();
     const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
     const type = event.dataTransfer.getData('application/reactflow');
+    // if(type == 'selectorNode'){
+    //   const connectId = ''
+    // }
     console.log(type)
     var position = null;
     // try{
@@ -73,7 +78,7 @@ const DnDFlow = () => {
     //   window.location.reload()
     // }
     const newNode = {
-      id: getId(),
+      id: type,
       type,
       position: {
         x: event.clientX,

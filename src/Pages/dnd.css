@@ -2,8 +2,8 @@
   flex-direction: column;
   display: flex;
   height:60em;
-  background: white;
-  background-image: radial-gradient(rgba(0, 0, 0, 0.329) 1px, transparent 0);
+  background: rgb(3, 10, 26);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.329) 1px, transparent 0);
   background-size: 30px 30px;
   background-position: -19px -19px;
 }
@@ -38,8 +38,11 @@
 .dndflow .dndnode.output {
   border-color: #ff0072;
 }
-.dndflow .dndnode.Text {
+.dndflow .dndnode.inputNum {
   border-color: #00ffc8;
+}
+.dndflow .dndnode.outputNode {
+  border-color: #ff00aa;
 }
 .dndflow .navBar{
 
@@ -92,4 +95,24 @@
   border:solid;
   border-radius: 3px;
   border-width: 1px;
+  border-color: #00ffc8;
+}
+.selector{
+  width:170px;
+  height:50px;
+  display: flex;
+  background-color: rgb(255, 255, 255);
+}
+.selectorInput{
+  width:135px;
+  margin: auto;
+}
+.selector-Output{
+  border:solid;
+  border-radius: 3px;
+  border-width: 1px;
+  border-color: #ff00aa;
+}
+.selector-Output #output{
+  margin: auto;
 }
