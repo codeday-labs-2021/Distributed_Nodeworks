@@ -1,7 +1,8 @@
-import React, { memo } from 'react';
+import React, { createRef, memo } from 'react';
 
 import { Handle } from 'react-flow-renderer';
 import './dnd.css';
+let letId = React.createRef()
 export default memo(({ data, isConnectable }) => {
   return (
     <>
@@ -24,6 +25,7 @@ export default memo(({ data, isConnectable }) => {
         id="a"
         style={{ top: 10, background: 'red' }}
         isConnectable={isConnectable}
+        onConnect={(params) => console.log('handle onConnect', params)}
       />
       <Handle
         type="source"

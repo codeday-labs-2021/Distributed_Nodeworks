@@ -93,8 +93,8 @@ const DnDFlow = () => {
   }, [reactFlowInstance]);
   const sendWorkflow = () =>{
     // console.log(elements)
-    // let ele = JSON.stringify(elements)
-    // console.log(ele)
+    let ele = JSON.stringify(elements)
+    console.log(ele)
     try{
       fileID = fileID.current.value
     }
