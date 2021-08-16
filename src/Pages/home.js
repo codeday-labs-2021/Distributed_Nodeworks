@@ -70,19 +70,8 @@ const DnDFlow = () => {
     // }
     console.log(type)
     var position = null;
-    // try{
-    //   var position = reactFlowInstance.project({
-    //     x: event.clientX - reactFlowBounds.left,
-    //     y: event.clientY - reactFlowBounds.top,
-    //   });
-    //   console.log(position)
-    // }
-    // catch{
-    //   console.log("ERROR")
-    //   window.location.reload()
-    // }
     const newNode = {
-      id: type,
+      id: getId(),
       type,
       position: {
         x: event.clientX,
@@ -90,7 +79,7 @@ const DnDFlow = () => {
       },
       data: { label: `${type} node` },
     };
-    console.log(id)
+    console.log(newNode)
     setElements((es) => es.concat(newNode));
     console.log(newNode.id);
   },[setElements]);
