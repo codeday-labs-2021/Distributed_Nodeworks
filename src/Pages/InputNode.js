@@ -2,10 +2,6 @@ import React, { memo } from 'react';
 
 import { Handle } from 'react-flow-renderer';
 import './dnd.css';
-const onConnect=()=>{
-  window.alert('HELLO')
-}
-// const isValidConnection=()=>
 export default memo(({ data, isConnectable }) => {
   return (
     <>
@@ -28,8 +24,6 @@ export default memo(({ data, isConnectable }) => {
         id="a"
         style={{ top: 10, background: 'red' }}
         isConnectable={isConnectable}
-        onConnect={onConnect}
-        // isValidConnection={isValidConnection}
       />
       <Handle
         type="source"
@@ -37,7 +31,6 @@ export default memo(({ data, isConnectable }) => {
         id="b"
         style={{ bottom: 10, top: 'auto', background: '#555' }}
         isConnectable={isConnectable}
-        onConnect={onConnect}
       />
     </>
   );
