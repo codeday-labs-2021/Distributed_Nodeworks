@@ -4,6 +4,7 @@ import ReactFlow, {
   addEdge,
   removeElements,
   Controls,
+  MiniMap,
 } from 'react-flow-renderer';
 
 import Sidebar from './Sidebar.js';
@@ -17,6 +18,8 @@ localforage.config({
   name: 'react-flow-docs',
   storeName: 'flows',
 });
+
+const initBgColor = '#1A192B';
 
 const flowKey = 'example-flow';
 const nodes = JSON.parse(sessionStorage.getItem('content'));
@@ -41,7 +44,8 @@ const DnDFlow = () => {
   // if(name!=null){
   //   fileID.current.value = name
   // }
-  
+  const [bgColor, setBgColor] = useState(initBgColor);
+
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [elements, setElements] = useState(initialElements);
@@ -187,6 +191,17 @@ const DnDFlow = () => {
             onDragOver={onDragOver}
             nodeTypes={nodeTypes}
           >
+            <MiniMap
+              nodeStrokeColor={(n) => {
+                if (n.type === 'input') return '#0041d0';
+                if (n.type === 'output') return '#ff0072';
+                if (n.type === 'default') return '#1a192b';
+                if(n.type === 'outputNum') return '#ff00aa';  
+                if(n.type === 'selectorNode') return '#00ffc8';              
+              }}
+              
+            />
+
             <Controls />
           </ReactFlow>
 
