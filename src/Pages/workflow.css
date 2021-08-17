@@ -34,7 +34,7 @@ body{
 
 .area{
     background: #4e54c8;  
-    /* background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);   */
+    background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);  
     width: 100%;
     height:100vh;
     
@@ -322,7 +322,7 @@ body{
       background: var(--color-red) url(https://i.postimg.cc/wBXGXbWN/pixel.png); 
       transition-delay: 0.8s;
       background-size: 180px;
-      animation: animate var(--speed-fast) steps(8) forwards;
+      animation: animate2 var(--speed-fast) steps(8) forwards;
     }
 /* .create:last-of-type {
       border: 1px solid var(--color-purple);
@@ -330,7 +330,7 @@ body{
 .create:hover {
         background: var(--color-purple) url(https://i.postimg.cc/FzBWFtKM/pixel2.png); 
 } */
-  @keyframes animate {
+  @keyframes animate2 {
     0% {
       background-position-y: 0;
     }
