@@ -2,7 +2,7 @@ from flask import request, jsonify, abort, redirect, url_for, render_template, s
 from flaskapp import db, bcrypt, q
 # from flaskapp.tasks import execute_node
 from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel, workflow_schema, workflows_schema
-from flaskapp.dag_solver import dag_solver
+from flaskapp.dag_solver import dag_solver_flow
 # from flaskapp.tasks import execute_node
 from flask_login import login_user, current_user, logout_user
 import uuid
@@ -106,7 +106,6 @@ def logout():
         abort(403, description="Not logged in")
     
 
-
 @api_bp.route('/api/v1/getuser/<key>', methods=['GET'])
 def get_user(key):
     user = UserModel.query.filter_by(user_key=key).first()
@@ -138,11 +137,17 @@ def workflow_hello():
     return 'This is workflow'
 
 
+<<<<<<< HEAD
 @api_bp.route('/api/v1/workflow/publish/<key>', methods=['POST', 'GET', 'PUT'])
 def publish(key):
     # if current_user.is_authenticated:
     user = UserModel.query.filter_by(user_key=key).first()
     if user != None:
+=======
+@api_bp.route('/api/v1/workflow/publish', methods=['POST', 'GET', 'PUT'])
+def publish():
+    if current_user.is_authenticated:
+>>>>>>> main
         if request.method == 'POST':
             file = request.files['file']
 
@@ -161,6 +166,7 @@ def publish(key):
 
         if request.method == 'PUT':
             file_data = request.get_json(force=True)
+<<<<<<< HEAD
             print(file_data['node'])
             # file_name = file_data["file_name"]
             file_name = file_data['fileId']
@@ -170,6 +176,15 @@ def publish(key):
             file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
             search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id)
             print(search_file_by_id)
+=======
+
+            file_name = file_data["file_name"]
+            owner = file_data["owner"]
+            file_content = str(file_data["file_content"])
+            file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
+
+            search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id)
+>>>>>>> main
             new_file = WorkflowModel(owner=owner, name=file_name, content=file_content, file_id=file_id)
             db.session.add(new_file)
             db.session.commit()
@@ -206,6 +221,7 @@ def get_workflow(file_id):
     if(True):
         chosen_workflow = WorkflowModel.query.filter_by(file_id=file_id).first()
         return workflow_schema.jsonify(chosen_workflow)
+<<<<<<< HEAD
     else:
         abort(403, description="Not logged in")
 
@@ -214,6 +230,8 @@ def get_User_workflow(owner):
     if(True):
         chosen_workflow = WorkflowModel.query.filter_by(owner=owner).all()
         return workflows_schema.jsonify(chosen_workflow)
+=======
+>>>>>>> main
     else:
         abort(403, description="Not logged in")
 
@@ -231,7 +249,11 @@ def execute_file(file_id):
     if True:
         chosen_workflow = WorkflowModel.query.filter_by(file_id=file_id).first()
         json_content = json.loads(chosen_workflow.content)
+<<<<<<< HEAD
         sorted_order = dag_solver(json_content)
+=======
+        sorted_order = dag_solver_flow(json_content)
+>>>>>>> main
         return json.dumps(sorted_order)
     else:
         abort(403, description="Not logged in")

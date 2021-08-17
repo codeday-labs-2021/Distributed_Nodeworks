@@ -6,11 +6,9 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from rq import Queue
 from redis import Redis
-# from flask_rq2  import RQ
 from config import Config
 from flask_cors import CORS
 import time
-# from flaskapp.tasks import rq
 
 r = Redis()
 q = Queue(connection=r)
