@@ -83,9 +83,9 @@ class workflow extends Component{
             <div class="area">
                 <h4 class="Title">WORKFLOWS</h4>
                 <div class="workflow">
-                    <button class = "create3" onClick ={() => this.createWork()}> 
-                        Create Workflow
-                    </button>
+                    
+
+                    <a class="create" href="javascript:void(0);" onClick ={() => this.createWork()}>Create Workflow</a>
 
                     <div>
                         {this.state.workflow}
