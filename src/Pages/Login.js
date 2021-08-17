@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import { Redirect } from "react-router-dom";
+// import curry from "./img/"
 class Login extends Component{
     state = {}
     handleSubmit = e => {
@@ -13,8 +14,8 @@ class Login extends Component{
         }
         axios.post('http://localhost:5000/api/v1/login',data).then(
             res=>{
-                localStorage.setItem('token',res['data']['user_key']);
-                localStorage.setItem('username',res['data']['username'])
+                sessionStorage.setItem('token',res['data']['user_key']);
+                sessionStorage.setItem('username',res['data']['username'])
                 // if(res['status'] == 200){
                 //     this.setState({ redirect: "/home" });
                 // }
@@ -33,7 +34,7 @@ class Login extends Component{
     }
     render() {
         if(this.state.loggedIn){
-            return <Redirect to={'/'} />
+            return <Redirect to={'/workflow'} />
         }
         return(
             <div className="wrapper fadeInDown">
@@ -42,7 +43,7 @@ class Login extends Component{
 
                     <!-- Icon --> */}
                     <div className="fadeIn first">
-                        <img src='./img/stephencurryCircle.png' id="icon" alt="User Icon" />
+                        <img src='./img/user.svg' id="icon" alt="User Icon" />
                     </div>
                     {/* <!-- Login Form --> */}
                     <form onSubmit={this.handleSubmit} method="POST">

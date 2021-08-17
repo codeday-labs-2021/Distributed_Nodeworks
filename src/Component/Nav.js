@@ -3,19 +3,19 @@ import React from 'react';
 function logout(){
     console.log("LOGGINOUT")
     
-    localStorage.clear()
+    sessionStorage.clear()
 }
 const Nav = () =>{
-    if(localStorage.getItem('token')!=null){
-        console.log(localStorage.getItem('token'))
+    if(sessionStorage.getItem('token')!=null){
+        console.log(sessionStorage.getItem('token'))
         return(
             <nav className = "navbar navbar-expand navbar-dark bg-dark">
                 <div className = "container">
-                    <a href = "/" className = "navbar-brand">{localStorage.getItem('username') }'s Nodeworks</a>
+                    <a href = "/" className = "navbar-brand">{sessionStorage.getItem('username') }'s Nodeworks</a>
                     <div className = "collapse navbar-collapse">
                         <ul className="navbar-nav ms-auto">
                             <li className="nav-item">
-                            <a href="/workflow" className = "nav-link" onClick={logout}>Workflows</a>
+                            <a href="/workflow" className = "nav-link">Workflows</a>
                             </li>
                             <li className="nav-item">
                             <a href="/status" className = "nav-link" onClick={logout}>Status</a>

@@ -8,10 +8,13 @@ html {
 }
 
 body {
-  font-family: "Poppins", sans-serif;
+  /* font-family: "Poppins", sans-serif; */
   height: 100vh;
 }
-
+.navbar{
+  position: relative;
+  z-index: 1000;
+}
 a {
   color: #92badd;
   display:inline-block;

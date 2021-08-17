@@ -137,9 +137,17 @@ def workflow_hello():
     return 'This is workflow'
 
 
+<<<<<<< HEAD
+@api_bp.route('/api/v1/workflow/publish/<key>', methods=['POST', 'GET', 'PUT'])
+def publish(key):
+    # if current_user.is_authenticated:
+    user = UserModel.query.filter_by(user_key=key).first()
+    if user != None:
+=======
 @api_bp.route('/api/v1/workflow/publish', methods=['POST', 'GET', 'PUT'])
 def publish():
     if current_user.is_authenticated:
+>>>>>>> main
         if request.method == 'POST':
             file = request.files['file']
 
@@ -158,6 +166,17 @@ def publish():
 
         if request.method == 'PUT':
             file_data = request.get_json(force=True)
+<<<<<<< HEAD
+            print(file_data['node'])
+            # file_name = file_data["file_name"]
+            file_name = file_data['fileId']
+            # print(user.username)
+            owner = file_data['user']
+            file_content = str(file_data["node"])
+            file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
+            search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id)
+            print(search_file_by_id)
+=======
 
             file_name = file_data["file_name"]
             owner = file_data["owner"]
@@ -165,6 +184,7 @@ def publish():
             file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
 
             search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id)
+>>>>>>> main
             new_file = WorkflowModel(owner=owner, name=file_name, content=file_content, file_id=file_id)
             db.session.add(new_file)
             db.session.commit()
@@ -198,22 +218,30 @@ def download_workflow(file_id):
 
 @api_bp.route('/api/v1/workflow/get/<file_id>', methods=['GET'])
 def get_workflow(file_id):
-    if current_user.is_authenticated:
+    if(True):
         chosen_workflow = WorkflowModel.query.filter_by(file_id=file_id).first()
         return workflow_schema.jsonify(chosen_workflow)
+<<<<<<< HEAD
+    else:
+        abort(403, description="Not logged in")
+
+@api_bp.route('/api/v1/workflow/getOwner/<owner>', methods=['GET'])
+def get_User_workflow(owner):
+    if(True):
+        chosen_workflow = WorkflowModel.query.filter_by(owner=owner).all()
+        return workflows_schema.jsonify(chosen_workflow)
+=======
+>>>>>>> main
     else:
         abort(403, description="Not logged in")
 
 
 @api_bp.route('/api/v1/workflow/delete/<file_id>', methods=['GET'])
 def delete_workflow(file_id):
-    if current_user.is_authenticated:
-        chosen_workflow = WorkflowModel.query.filter_by(file_id=file_id).first()
-        db.session.delete(chosen_workflow)
-        db.session.commit()
-        return 'Delete workflow successfully', 200
-    else:
-        abort(403, description="Not logged in")
+    chosen_workflow = WorkflowModel.query.filter_by(file_id=file_id).first()
+    db.session.delete(chosen_workflow)
+    db.session.commit()
+    return 'Delete workflow successfully', 200
 
 
 @api_bp.route('/api/v1/workflow/execute/<file_id>')
@@ -221,7 +249,11 @@ def execute_file(file_id):
     if True:
         chosen_workflow = WorkflowModel.query.filter_by(file_id=file_id).first()
         json_content = json.loads(chosen_workflow.content)
+<<<<<<< HEAD
+        sorted_order = dag_solver(json_content)
+=======
         sorted_order = dag_solver_flow(json_content)
+>>>>>>> main
         return json.dumps(sorted_order)
     else:
         abort(403, description="Not logged in")

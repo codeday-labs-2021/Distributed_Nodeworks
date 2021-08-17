@@ -32,6 +32,10 @@ __pycache__
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+<<<<<<< HEAD
+package-lock.json
+=======
+>>>>>>> main
 =======
 node_modules
 >>>>>>> dc526f6f413caf84a5c6555071169b6015e70d76
