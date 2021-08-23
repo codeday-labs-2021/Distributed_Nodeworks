@@ -14,6 +14,7 @@ import localforage from 'localforage';
 import ColorSelectorNode from './InputNode';
 import outputNode from './OutputNode'
 
+
 localforage.config({
   name: 'react-flow-docs',
   storeName: 'flows',
@@ -164,19 +165,19 @@ const DnDFlow = () => {
       return <div class = "navBar">
       <input class="fileName" placeholder="Type Filename" value = {name}></input>
       <div class = "navObjects">
-        <img src = "./img/save.svg" class= "navBtn" onClick={onSave}></img>
-        <img src = "./img/undo-alt.svg" class= "navBtn" onClick={onRestore}></img>
-        <img src = "./img/cloud-upload-alt.svg" class= "navBtn" onClick={sendWorkflow}></img>
+        <img src = "/./img/save.svg" class= "navBtn" onClick={onSave}></img>
+        <img src = "/./img/undo-alt.svg" class= "navBtn" onClick={onRestore}></img>
+        <img src = "/./img/cloud-upload-alt.svg" class= "navBtn" onClick={sendWorkflow}></img>
       </div>
     </div>
     }
     return <div class = "navBar">
       <input ref = {fileID} class="fileName" placeholder="Type Filename"></input>
       <div class = "navObjects">
-        <img src = "./img/play-circle.svg" class= "navBtn"></img>
-        <img src = "./img/save.svg" class= "navBtn" onClick={onSave}></img>
-        <img src = "./img/undo-alt.svg" class= "navBtn" onClick={onRestore}></img>
-        <img src = "./img/cloud-upload-alt.svg" class= "navBtn" onClick={sendWorkflow}></img>
+        <img src = "/./img/play-circle.svg" class= "navBtn"></img>
+        <img src = "/./img/save.svg" class= "navBtn" onClick={onSave}></img>
+        <img src = "/./img/undo-alt.svg" class= "navBtn" onClick={onRestore}></img>
+        <img src = "/./img/cloud-upload-alt.svg" class= "navBtn" onClick={sendWorkflow}></img>
       </div>
     </div>
   };
@@ -184,6 +185,7 @@ const DnDFlow = () => {
     <div className="dndflow">
       <ReactFlowProvider>
         <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+          
           {loggedIn()}
           <ReactFlow
           

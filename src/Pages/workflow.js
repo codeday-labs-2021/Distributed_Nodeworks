@@ -11,7 +11,7 @@ class workflow extends Component{
         sessionStorage.setItem("content",null);
         sessionStorage.setItem("contentName",null);
         sessionStorage.setItem("content-length",null)
-        window.location = "/home/";
+        window.location = "/";
     }
     workflowFiles(content, name, fileID, owner,data){
         // console.log(data);

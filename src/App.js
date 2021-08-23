@@ -7,8 +7,9 @@ import {BrowserRouter, Route} from 'react-router-dom'
 import signup from './Pages/Signup';
 import Home from './Pages/home';
 import Workflow from './Pages/workflow'
-import Main from './Pages/main'
 import axios from 'axios';
+import main from './Pages/main'
+import ReactFlow from 'react-flow-renderer';
 export default class App extends Component{
   state ={}
   componentDidMount= ()=>{
@@ -36,10 +37,9 @@ export default class App extends Component{
           <main className="form-signin">
             <Route path ="/signup/" exact component={signup}/>
             <Route path ="/login/" exact component={Login}/>
-            <Route path ="/" exact component={Main}/>
           </main>
           <Route path ="/workflow/" exact component={Workflow}/>
-          <Route path="/home/" exact component={()=> <Home user={this.state.user } key = {this.state.key}/> }/>
+          <Route path="/Home/" exact component={Home}/>
         </BrowserRouter>
       </div>
     );

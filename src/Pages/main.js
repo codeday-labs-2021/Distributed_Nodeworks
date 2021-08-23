@@ -1,16 +1,16 @@
 import React, {Component} from 'react';
 
 // import curry from "./img/"
-class main extends Component{
+class yes extends Component{
 
     render() {
         return(
             <div>
-            
+                fdsfdsf
             </div>
         )
     }
 }
 
 
-export default main;
+export default yes;
