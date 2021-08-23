@@ -172,10 +172,15 @@ def publish():
             file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
 
             search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id)
-            new_file = WorkflowModel(owner=owner, name=file_name, content=file_content, file_id=file_id)
-            db.session.add(new_file)
-            db.session.commit()
-            return 'File is put.', 201
+            if search_file_by_id:
+                search_file_by_id.content = file_content
+                db.session.commit()
+                return 'File content is updated', 200
+            else:
+                new_file = WorkflowModel(owner=owner, name=file_name, content=file_content, file_id=file_id)
+                db.session.add(new_file)
+                db.session.commit()
+                return 'File is put.', 201
 
         if request.method == 'GET':
             return render_template('upload.html')
