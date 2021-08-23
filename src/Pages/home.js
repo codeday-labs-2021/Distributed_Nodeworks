@@ -28,11 +28,11 @@ const name = sessionStorage.getItem('contentName');
 // console.log("TEST"+name);
 let initialElements = [];
 let id = 0;
-const SavedFile = false
+let Save = false
 if(nodes!= null){
   initialElements = nodes;
   id = sessionStorage.getItem('content-length');
-  SavedFile = true
+  Save = true
 }
 
 
@@ -102,7 +102,7 @@ const DnDFlow = () => {
       fileID = fileID.current.value
     }
     catch{
-      window.alert("ERROR")
+      window.alert("ERROR",fileID)
       return
     }
     const data={
@@ -110,30 +110,37 @@ const DnDFlow = () => {
       node: elements,
       fileId: fileID
     }
+    if(data.fileId == ""){
+      console.log("EMPTY")
+      window.alert("Cannot have empty file name")
+      return
+    }
     console.log(data)
     // HOW TO SAVE
-    if(SavedFile == true){
+    if(Save == true){
       axios.post('http://localhost:5000/api/v1/workflow/publish/'+sessionStorage.getItem('token'),data).then(
+        res=>{
+          console.log("HELLO posted" + res)
+      }
+      ).catch(
+        err =>{
+            window.alert("ERROR IN SAVED FILE")
+            console.log("ERROR IN SAVED FILE");
+        }
+      )
+    }
+    else{
+      axios.put('http://localhost:5000/api/v1/workflow/publish/'+sessionStorage.getItem('token'),data).then(
         res=>{
           console.log("HELLO" + res)
       }
       ).catch(
         err =>{
-            window.alert(err)
-            console.log(err);
+            window.alert("ERROR In FILE")
+            console.log("ERROR IN FILE");
         }
-      )
+      ) 
     }
-    axios.put('http://localhost:5000/api/v1/workflow/publish/'+sessionStorage.getItem('token'),data).then(
-      res=>{
-        console.log("HELLO" + res)
-    }
-    ).catch(
-      err =>{
-          window.alert(err)
-          console.log(err);
-      }
-    )
     //HOW TO SAVE END
     // axios.get('http://localhost:5000/api/v1/workflow/getOwner/'+localStorage.getItem('username')).then(
     //   res=>{
@@ -163,7 +170,7 @@ const DnDFlow = () => {
   const loggedIn = () =>{
     if(nodes!= null){
       return <div class = "navBar">
-      <input class="fileName" placeholder="Type Filename" value = {name}></input>
+      <input class="fileName" ref = {fileID} placeholder="Type Filename" value = {name}></input>
       <div class = "navObjects">
         <img src = "/./img/save.svg" class= "navBtn" onClick={onSave}></img>
         <img src = "/./img/undo-alt.svg" class= "navBtn" onClick={onRestore}></img>
