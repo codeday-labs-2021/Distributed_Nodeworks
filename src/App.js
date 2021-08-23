@@ -34,6 +34,7 @@ export default class App extends Component{
       <div className="App">
         <Nav user={this.state.user } key = {this.state.key}/>
         <BrowserRouter>
+          <Route path="/" exact component={main}/>
           <main className="form-signin">
             <Route path ="/signup/" exact component={signup}/>
             <Route path ="/login/" exact component={Login}/>
