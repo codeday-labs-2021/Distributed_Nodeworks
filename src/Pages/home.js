@@ -27,9 +27,11 @@ const name = sessionStorage.getItem('contentName');
 // console.log("TEST"+name);
 let initialElements = [];
 let id = 0;
+const SavedFile = false
 if(nodes!= null){
   initialElements = nodes;
   id = sessionStorage.getItem('content-length');
+  SavedFile = true
 }
 
 
@@ -103,13 +105,25 @@ const DnDFlow = () => {
       return
     }
     const data={
-      user: localStorage.getItem('username'),
+      user: sessionStorage.getItem('username'),
       node: elements,
       fileId: fileID
     }
     console.log(data)
     // HOW TO SAVE
-    axios.put('http://localhost:5000/api/v1/workflow/publish/'+localStorage.getItem('token'),data).then(
+    if(SavedFile == true){
+      axios.post('http://localhost:5000/api/v1/workflow/publish/'+sessionStorage.getItem('token'),data).then(
+        res=>{
+          console.log("HELLO" + res)
+      }
+      ).catch(
+        err =>{
+            window.alert(err)
+            console.log(err);
+        }
+      )
+    }
+    axios.put('http://localhost:5000/api/v1/workflow/publish/'+sessionStorage.getItem('token'),data).then(
       res=>{
         console.log("HELLO" + res)
     }
@@ -159,6 +173,7 @@ const DnDFlow = () => {
     return <div class = "navBar">
       <input ref = {fileID} class="fileName" placeholder="Type Filename"></input>
       <div class = "navObjects">
+        <img src = "./img/play-circle.svg" class= "navBtn"></img>
         <img src = "./img/save.svg" class= "navBtn" onClick={onSave}></img>
         <img src = "./img/undo-alt.svg" class= "navBtn" onClick={onRestore}></img>
         <img src = "./img/cloud-upload-alt.svg" class= "navBtn" onClick={sendWorkflow}></img>
