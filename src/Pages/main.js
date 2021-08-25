@@ -6,8 +6,8 @@ class yes extends Component{
 
     render() {
         return(
-            <div class= "area">
-                <ul class="circles">
+            <div class= "areaMain">
+                <ul class="circlesMain">
                     <li></li>
                     <li></li>
                     <li></li>
@@ -50,21 +50,21 @@ class yes extends Component{
                             <p>Airi Pham</p>
                             <img class="picture" src="./img/bunny.png"></img>
                             <div class="middle">
-                                <div class="text">[Text Here]</div>
+                                <div class="textMain">[Text Here]</div>
                             </div>
                         </div>
                         <div class="pic2">
                             <p>Derek In</p>
                             <img class="picture"src="./img/derek.jpeg"></img>
                             <div class="middle">
-                                <div class="text">[Text Here]</div>
+                                <div class="textMain">[Text Here]</div>
                             </div>
                         </div>
                         <div class="pic2">
                             <p>Allyson Rivera</p>
-                            <img class="picture"src="./img/allyson.jpg"></img>
+                            <img class="picture" id = "Allyson" src="./img/allyson.jpg"></img>
                             <div class="middle">
-                                <div class="text">I am a software engineer student 
+                                <div class="textMain">I am a software engineer student 
                                 at Cal State Monterey Bay working to attain a 
                                 bachelors degree in Computer Science.I enjoy sewing a baking 
                                 on my free time.</div>
