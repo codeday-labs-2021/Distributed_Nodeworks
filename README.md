@@ -1,13 +1,9 @@
 # Getting Started with Create React App
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
-=======
->>>>>>> main
+
 ## Prerequisites
 Familiarity with intermediate to advanced Python, Git, database server concepts and other tools like Flask.
 ## How to run
@@ -36,15 +32,10 @@ Login, Signup, Homepage Ui
 Create a react app, copy src folder into react app, api folder is flask backend so put that into your react folder as well. 
 Start react app, using npm run start, and start flask server as well, using flask run. 
 ### Contributors
-<<<<<<< HEAD
-=======
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
->>>>>>> 2ed2b30125be45a24640ce8fbc25f704a3989f4a
-=======
->>>>>>> dc526f6f413caf84a5c6555071169b6015e70d76
->>>>>>> main
 
 In the project directory, you can run:
 
