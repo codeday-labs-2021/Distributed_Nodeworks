@@ -1,14 +1,20 @@
 from flask import request, jsonify, abort, redirect, url_for, render_template, send_file, Blueprint
-from flaskapp import db, bcrypt, q
-# from flaskapp.tasks import execute_node
+from flaskapp import db, bcrypt, q, r
 from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel, workflow_schema, workflows_schema
 from flaskapp.dag_solver import dag_solver_flow
-# from flaskapp.tasks import execute_node
+from flaskapp.tasks import whatever
 from flask_login import login_user, current_user, logout_user
+from flaskapp.worker_proc import run_worker
+import asyncio
 import uuid
+import os
+import redis
 from io import BytesIO
 import json
 import time
+from rq import Worker, Queue, Connection
+from rq.command import send_kill_horse_command, send_shutdown_command
+from rq.worker import Worker, WorkerStatus
 
 api_bp = Blueprint("api", __name__)
 
@@ -16,6 +22,7 @@ api_bp = Blueprint("api", __name__)
 def execute_node(item):
     print("task running...")
     item = str(item)
+    print(item)
     time.sleep(2)
     return len(item)
 
@@ -160,19 +167,20 @@ def publish(key):
 
         if request.method == 'PUT':
             file_data = request.get_json(force=True)
-            print(file_data['node'])
-            # file_name = file_data["file_name"]
             file_name = file_data['fileId']
-            # print(user.username)
             owner = file_data['user']
-            file_content = str(file_data["node"])
+            file_content = str(file_data['node'])
             file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
             search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id)
-            print(search_file_by_id)
-            new_file = WorkflowModel(owner=owner, name=file_name, content=file_content, file_id=file_id)
-            db.session.add(new_file)
-            db.session.commit()
-            return 'File is put.', 201
+            if search_file_by_id:
+                updated_file = search_file_by_id.update(dict(content=file_content))
+                db.session.commit()
+                return 'File content is updated', 200
+            else:
+                new_file = WorkflowModel(owner=owner, name=file_name, content=file_content, file_id=file_id)
+                db.session.add(new_file)
+                db.session.commit()
+                return 'File is put.', 201
 
         if request.method == 'GET':
             return render_template('upload.html')
@@ -238,5 +246,49 @@ def execute_file(file_id):
 
 @api_bp.route('/api/v1/workflow/execute/test_queue')
 def test_queue():
-    job = q.enqueue(execute_node, "abcdefghijklmnop")
-    return json.dumps(f"Theres a job {job.id}, {len(q)} tasks right now")
+    job = q.enqueue(whatever, "abcdefghijklmnop")
+    return json.dumps(f"Theres a job {job.id}, {len(q)} tasks right now.")
+
+
+@api_bp.route('/api/v1/queue/clear')
+def clear_queue():
+    q.empty()
+    return json.dumps(f"Queue emptied. There is {len(q)} tasks right now.")
+
+
+@api_bp.route('/api/v1/queue/status')
+def status_queue():
+    return json.dumps(f"There is {len(q)} tasks right now.")
+
+
+# the problem
+@api_bp.route('/api/v1/runners/register')
+def register_runner():
+    message = asyncio.run(run_worker())
+    return "Runner has been registered and worked", 200    
+
+
+@api_bp.route('/api/v1/runners/status')
+def status_runner():
+    workers = Worker.all(connection=r)
+    report = ''
+    for worker in workers:
+        report += f"Runner status: name = {worker.name}, queues = {worker.queues}, state = {worker.state}, successful job counts = {worker.successful_job_count}\n"
+    return report, 200
+
+
+@api_bp.route('/api/v1/runners/cancel')
+def cancel_runner_job():
+    workers = Worker.all(connection=r)
+    for worker in workers:
+        if worker.state == WorkerStatus.BUSY:
+            send_kill_horse_command(r, worker.name)
+    return "Runners' jobs are cancelled.", 200
+
+
+@api_bp.route('/api/v1/runners/shutdown')
+def cancel_worker():
+    workers = Worker.all(connection=r)
+    for worker in workers:
+        send_shutdown_command(r, worker.name)
+    return "Runners are shutdown", 200

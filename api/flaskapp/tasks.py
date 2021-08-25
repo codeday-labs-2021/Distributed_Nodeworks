@@ -5,5 +5,6 @@ from flask import Flask
 def whatever(item):
     print("task running...")
     item = str(item)
+    print(item)
     time.sleep(2)
     return len(item)
