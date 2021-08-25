@@ -146,7 +146,7 @@ def workflow_hello():
 
 @api_bp.route('/api/v1/workflow/publish', methods=['POST', 'GET', 'PUT'])
 def publish():
-    if current_user.is_authenticated:
+    if True:
         if request.method == 'POST':
             file = request.files['file']
 
@@ -166,14 +166,14 @@ def publish():
         if request.method == 'PUT':
             file_data = request.get_json(force=True)
 
-            file_name = file_data["file_name"]
+            file_name = file_data["name"]
             owner = file_data["owner"]
-            file_content = str(file_data["file_content"])
+            file_content = str(file_data["content"])
             file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
 
             search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id)
             if search_file_by_id:
-                search_file_by_id.content = file_content
+                updated_file = search_file_by_id.update(dict(content=file_content))
                 db.session.commit()
                 return 'File content is updated', 200
             else:
