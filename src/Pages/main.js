@@ -57,7 +57,7 @@ class yes extends Component{
                             <p>Derek In</p>
                             <img class="picture"src="./img/derek.jpeg"></img>
                             <div class="middle">
-                                <div class="textMain">[Text Here]</div>
+                                <div class="textMain">Computer Science student at California State Monterey Bay, graduating May, 2023. I love to play basketball and tennis in my free time. Add me on LinkedIn! https://www.linkedin.com/in/derek-in/</div>
                             </div>
                         </div>
                         <div class="pic2">
