@@ -145,9 +145,8 @@ def workflow_hello():
 
 @api_bp.route('/api/v1/workflow/publish/<key>', methods=['POST', 'GET', 'PUT'])
 def publish(key):
-    # if current_user.is_authenticated:
     user = UserModel.query.filter_by(user_key=key).first()
-    if True:
+    if user != None:
         if request.method == 'POST':
             file = request.files['file']
 
@@ -155,7 +154,7 @@ def publish(key):
             owner = current_user.username
             file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
 
-            search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id)
+            search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id).first()
             if search_file_by_id:
                 abort(409, "This filename has already existed in your account. Please rename.")
 
@@ -170,7 +169,7 @@ def publish(key):
             owner = file_data['user']
             file_content = str(file_data['node'])
             file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
-            search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id)
+            search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id).first()
             if search_file_by_id:
                 updated_file = search_file_by_id.update(dict(content=file_content))
                 db.session.commit()
