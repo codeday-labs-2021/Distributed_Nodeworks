@@ -4,8 +4,7 @@ from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel,
 from flaskapp.dag_solver import dag_solver_flow
 from flaskapp.tasks import whatever
 from flask_login import login_user, current_user, logout_user
-from flaskapp.worker_proc import run_worker
-import asyncio
+import ast
 import uuid
 import os
 import redis
@@ -148,7 +147,7 @@ def workflow_hello():
 def publish(key):
     # if current_user.is_authenticated:
     user = UserModel.query.filter_by(user_key=key).first()
-    if user != None:
+    if True:
         if request.method == 'POST':
             file = request.files['file']
 
@@ -237,9 +236,12 @@ def delete_workflow(file_id):
 def execute_file(file_id):
     if True:
         chosen_workflow = WorkflowModel.query.filter_by(file_id=file_id).first()
-        json_content = json.loads(chosen_workflow.content)
+        json_content = json.dumps(ast.literal_eval(chosen_workflow.content))
+        json_content = json.loads(json_content)
         sorted_order = dag_solver_flow(json_content)
-        return json.dumps(sorted_order)
+        for node in sorted_order:
+            job = q.enqueue(whatever, str(node))
+        return "Workflow runs successfully.", 200
     else:
         abort(403, description="Not logged in")
 
@@ -261,11 +263,11 @@ def status_queue():
     return json.dumps(f"There is {len(q)} tasks right now.")
 
 
-# the problem
-@api_bp.route('/api/v1/runners/register')
-def register_runner():
-    message = asyncio.run(run_worker())
-    return "Runner has been registered and worked", 200    
+# the problem, no longer implemented
+# @api_bp.route('/api/v1/runners/register')
+# def register_runner():
+#     message = asyncio.run(run_worker())
+#     return "Runner has been registered and worked", 200    
 
 
 @api_bp.route('/api/v1/runners/status')
