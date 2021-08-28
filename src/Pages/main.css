@@ -79,7 +79,9 @@
     opacity: 1;
   }
   .pic2:hover .textMain{
-    height:150px;
+    border-radius: 25px;
+    padding: 1em;
+    height:170px;
     width:500px;
     background-color: cadetblue;
     color: black;
