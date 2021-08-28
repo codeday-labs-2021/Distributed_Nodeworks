@@ -48,21 +48,21 @@ class yes extends Component{
                     <div class="names">
                         <div class="pic2">
                             <p>Airi Pham</p>
-                            <img class="picture" src="./img/bunny.png"></img>
+                            <img class="picture" src="./img/airi-modified.png"></img>
                             <div class="middle">
                                 <div class="textMain">[Text Here]</div>
                             </div>
                         </div>
                         <div class="pic2">
                             <p>Derek In</p>
-                            <img class="picture"src="./img/derek.jpeg"></img>
+                            <img class="picture"src="./img/derek.png"></img>
                             <div class="middle">
                                 <div class="textMain">[Text Here]</div>
                             </div>
                         </div>
                         <div class="pic2">
                             <p>Allyson Rivera</p>
-                            <img class="picture" id = "Allyson" src="./img/allyson.jpg"></img>
+                            <img class="picture" id = "Allyson" src="./img/allyson-modified.png"></img>
                             <div class="middle">
                                 <div class="textMain">I am a software engineer student 
                                 at Cal State Monterey Bay working to attain a 
