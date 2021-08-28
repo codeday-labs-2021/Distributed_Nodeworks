@@ -50,7 +50,7 @@ class yes extends Component{
                             <p>Airi Pham</p>
                             <img class="picture" src="./img/airi-modified.png"></img>
                             <div class="middle">
-                                <div class="textMain">[Text Here]</div>
+                                <div class="textMain">Hi, I'm Phuong Pham, a Computer Science Games major at the University of Southern California. I usually draw, crochet, play piano to anime themes (the only reason I play piano at all), and probably play video games amidst the hectic college schedule too.</div>
                             </div>
                         </div>
                         <div class="pic2">
