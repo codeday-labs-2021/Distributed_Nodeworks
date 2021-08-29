@@ -1,24 +1,30 @@
-import React, { createRef, memo } from 'react';
+import React, { createRef, memo, useEffect, useState } from 'react';
 
 import { Handle } from 'react-flow-renderer';
 import './dnd.css';
 let letId = React.createRef()
 export default memo(({ data, isConnectable }) => {
+
+  const newInput = (e) => {
+    console.log(e.target.value);
+    data["content"] = e.target.value;
+    console.log("new data: ", data)
+  }
+
   return (
     <>
       <Handle
         type="target"
         position="left"
         style={{ background: '#555' }}
-        onConnect={(params) => console.log('handle onConnect', params)}
+        // onConnect={(params) => console.log('handle onConnect as input node', params)}
         isConnectable={isConnectable}
       />
-      {/* <div className = "selector">
-        Custom Color Picker Node: <strong>{data.color}</strong>
-      </div> */}
+      
       <div className = "selector">
-        <input class = "selectorInput" placeholder = "Enter a number"></input>
+        <input class = "selectorInput" placeholder = "Enter a number" onChange={newInput}/>
       </div>
+
       <Handle
         type="source"
         position="right"
@@ -27,6 +33,7 @@ export default memo(({ data, isConnectable }) => {
         isConnectable={isConnectable}
         onConnect={(params) => console.log('handle onConnect', params)}
       />
+
       <Handle
         type="source"
         position="right"

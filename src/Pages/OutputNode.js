@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 
 import {  
   addEdge,
@@ -21,8 +21,8 @@ const isValid = (connection) =>{
   
 }
 const isValidConnection = (connection) => connection.target === 'selector';
-const onConnect = (source,target)=>{
-  console.log(target)
+const onConnect = (source,target) =>{
+  
 }
 export default memo(({ data, isConnectable }) => {
   console.log("hdlfksdjf",data)
@@ -32,11 +32,11 @@ export default memo(({ data, isConnectable }) => {
         type="target"
         position="top"
         style={{ background: '#555' }}
-        // isConnectable = {isConnectable}
+        isConnectable = {isConnectable}
         // isValidConnection={isValidConnection}
-        onConnect={onConnect()}
-        onConnectStart = {() => console.log('on connect start')}
+        onConnect={() => console.log("Hello neighbour.")}
       />
+
       <div className = "selector selector-Output">
         <p id = "output">{data.label}</p>
       </div>
