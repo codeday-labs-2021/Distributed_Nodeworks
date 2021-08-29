@@ -11,7 +11,7 @@ class workflow extends Component{
         sessionStorage.setItem("content",null);
         sessionStorage.setItem("contentName",null);
         sessionStorage.setItem("content-length",null)
-        window.location = "/";
+        window.location = "/Home/";
     }
     workflowFiles(content, name, fileID, owner,data){
         // console.log(data);
@@ -23,7 +23,7 @@ class workflow extends Component{
             sessionStorage.setItem("content",nodes);
             sessionStorage.setItem("contentName",newname);
             sessionStorage.setItem("content-length",Object.keys(numOfNodes).length)
-            window.location = "/";
+            window.location = "/Home/";
         }
         const deleteWorkFlow=(file_id)=>{
             axios.get('http://localhost:5000/api/v1/workflow/delete/'+file_id).then(

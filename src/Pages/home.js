@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
@@ -14,6 +14,7 @@ import localforage from 'localforage';
 import ColorSelectorNode from './InputNode';
 import outputNode from './OutputNode'
 
+
 localforage.config({
   name: 'react-flow-docs',
   storeName: 'flows',
@@ -27,9 +28,11 @@ const name = sessionStorage.getItem('contentName');
 // console.log("TEST"+name);
 let initialElements = [];
 let id = 0;
+let Save = false
 if(nodes!= null){
   initialElements = nodes;
   id = sessionStorage.getItem('content-length');
+  Save = true
 }
 
 
@@ -49,6 +52,16 @@ const DnDFlow = () => {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [elements, setElements] = useState(initialElements);
+
+  useEffect(() => {
+    console.log(elements);
+    if (elements.length > 2) {
+      if (elements[elements.length - 1].source !== undefined) {
+        console.log(elements[elements.length - 1]["source"]);
+      }
+    }
+  }, [elements]);
+
   const onConnect = (params) => setElements((els) => addEdge(params, els));
   const onElementsRemove = (elementsToRemove) =>
     setElements((els) => removeElements(elementsToRemove, els));
@@ -85,12 +98,12 @@ const DnDFlow = () => {
   },[setElements]);
   
   const onSave = useCallback(() => {
-    
     if (reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
       localforage.setItem(flowKey, flow);
     }
   }, [reactFlowInstance]);
+
   const sendWorkflow = () =>{
     // console.log(elements)
     let ele = JSON.stringify(elements)
@@ -99,26 +112,45 @@ const DnDFlow = () => {
       fileID = fileID.current.value
     }
     catch{
-      window.alert("ERROR")
+      window.alert("ERROR",fileID)
       return
     }
     const data={
-      user: localStorage.getItem('username'),
+      user: sessionStorage.getItem('username'),
       node: elements,
       fileId: fileID
     }
+    if(data.fileId == ""){
+      console.log("EMPTY")
+      window.alert("Cannot have empty file name")
+      return
+    }
     console.log(data)
     // HOW TO SAVE
-    axios.put('http://localhost:5000/api/v1/workflow/publish/'+localStorage.getItem('token'),data).then(
-      res=>{
-        console.log("HELLO" + res)
-    }
-    ).catch(
-      err =>{
-          window.alert(err)
-          console.log(err);
+    if(Save == true){
+      axios.post('http://localhost:5000/api/v1/workflow/publish/'+sessionStorage.getItem('token'),data).then(
+        res=>{
+          console.log("HELLO posted" + res)
       }
-    )
+      ).catch(
+        err =>{
+            window.alert("ERROR IN SAVED FILE")
+            console.log("ERROR IN SAVED FILE");
+        }
+      )
+    }
+    else{
+      axios.put('http://localhost:5000/api/v1/workflow/publish/'+sessionStorage.getItem('token'),data).then(
+        res=>{
+          console.log("HELLO" + res)
+      }
+      ).catch(
+        err =>{
+            window.alert("ERROR In FILE")
+            console.log("ERROR IN FILE");
+        }
+      ) 
+    }
     //HOW TO SAVE END
     // axios.get('http://localhost:5000/api/v1/workflow/getOwner/'+localStorage.getItem('username')).then(
     //   res=>{
@@ -142,26 +174,42 @@ const DnDFlow = () => {
 
     restoreFlow();
   }, [setElements]);
+
+  const onExecute = () => {
+    sendWorkflow();
+    console.log("This is file id", fileID);
+    axios.get('http://localhost:5000/api/v1/workflow/execute/' + fileID).then(
+      res => {
+        console.log(res);
+      }
+    ).catch(
+      err =>{
+        console.log(err);
+      }
+    )
+  };
+
   if(sessionStorage.getItem('username')==null){
     window.location = "/login";
   }
   const loggedIn = () =>{
     if(nodes!= null){
       return <div class = "navBar">
-      <input class="fileName" placeholder="Type Filename" value = {name}></input>
+      <input class="fileName" ref = {fileID} placeholder="Type Filename" value = {name}></input>
       <div class = "navObjects">
-        <img src = "./img/save.svg" class= "navBtn" onClick={onSave}></img>
-        <img src = "./img/undo-alt.svg" class= "navBtn" onClick={onRestore}></img>
-        <img src = "./img/cloud-upload-alt.svg" class= "navBtn" onClick={sendWorkflow}></img>
+        <img src = "/./img/save.svg" class= "navBtn" onClick={onSave}></img>
+        <img src = "/./img/undo-alt.svg" class= "navBtn" onClick={onRestore}></img>
+        <img src = "/./img/cloud-upload-alt.svg" class= "navBtn" onClick={sendWorkflow}></img>
       </div>
     </div>
     }
     return <div class = "navBar">
       <input ref = {fileID} class="fileName" placeholder="Type Filename"></input>
       <div class = "navObjects">
-        <img src = "./img/save.svg" class= "navBtn" onClick={onSave}></img>
-        <img src = "./img/undo-alt.svg" class= "navBtn" onClick={onRestore}></img>
-        <img src = "./img/cloud-upload-alt.svg" class= "navBtn" onClick={sendWorkflow}></img>
+        <img src = "/./img/play-circle.svg" class= "navBtn" onClick={onExecute}></img>
+        <img src = "/./img/save.svg" class= "navBtn" onClick={onSave}></img>
+        <img src = "/./img/undo-alt.svg" class= "navBtn" onClick={onRestore}></img>
+        <img src = "/./img/cloud-upload-alt.svg" class= "navBtn" onClick={sendWorkflow}></img>
       </div>
     </div>
   };
@@ -169,6 +217,7 @@ const DnDFlow = () => {
     <div className="dndflow">
       <ReactFlowProvider>
         <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+          
           {loggedIn()}
           <ReactFlow
           

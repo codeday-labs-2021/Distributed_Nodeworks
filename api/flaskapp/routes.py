@@ -148,20 +148,24 @@ def publish(key):
     user = UserModel.query.filter_by(user_key=key).first()
     if user != None:
         if request.method == 'POST':
-            file = request.files['file']
-
-            file_name = str(file.filename).rsplit('.', 1)[0]
-            owner = current_user.username
+            file_data = request.get_json(force=True)
+            # print(file_data['node'])
+            # file_name = file_data["file_name"]
+            file_name = file_data['fileId']
+            # print(user.username)
+            owner = file_data['user']
+            file_content = str(file_data["node"])
             file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
 
             search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id).first()
             if search_file_by_id:
                 abort(409, "This filename has already existed in your account. Please rename.")
 
-            new_file = WorkflowModel(owner=owner, name=file_name, content=file.read(), file_id=file_id)
+            new_file = WorkflowModel(owner=owner, name=file_name, content=file_content, file_id=file_id)
+            delete_workflow(file_id)
             db.session.add(new_file)
             db.session.commit()
-            return file.filename + ' is saved.', 201
+            return 'File is post.', 201
 
         if request.method == 'PUT':
             file_data = request.get_json(force=True)

@@ -18,7 +18,7 @@ const Nav = () =>{
                             <a href="/workflow" className = "nav-link">Workflows</a>
                             </li>
                             <li className="nav-item">
-                            <a href="/status" className = "nav-link" onClick={logout}>Status</a>
+                            <a href="/status" className = "nav-link" >Status</a>
                             </li>
                             <li className="nav-item">
                             <a href="/login" className = "nav-link" onClick={logout}>Logout</a>

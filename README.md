@@ -1,6 +1,8 @@
 # Getting Started with Create React App
 
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
 
 ## Prerequisites
 Familiarity with intermediate to advanced Python, Git, database server concepts and other tools like Flask.
@@ -33,7 +35,6 @@ Start react app, using npm run start, and start flask server as well, using flas
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
-
 
 In the project directory, you can run:
 

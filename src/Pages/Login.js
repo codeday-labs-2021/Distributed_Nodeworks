@@ -43,7 +43,7 @@ class Login extends Component{
 
                     <!-- Icon --> */}
                     <div className="fadeIn first">
-                        <img src='./img/user.svg' id="icon" alt="User Icon" />
+                        <img src='./img/bunny.png' id="icon" alt="User Icon" height = "200px" width = "200px"/>
                     </div>
                     {/* <!-- Login Form --> */}
                     <form onSubmit={this.handleSubmit} method="POST">

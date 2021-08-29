@@ -8,6 +8,8 @@ import signup from './Pages/Signup';
 import Home from './Pages/home';
 import Workflow from './Pages/workflow'
 import axios from 'axios';
+import main from './Pages/main'
+import ReactFlow from 'react-flow-renderer';
 export default class App extends Component{
   state ={}
   componentDidMount= ()=>{
@@ -32,12 +34,13 @@ export default class App extends Component{
       <div className="App">
         <Nav user={this.state.user } key = {this.state.key}/>
         <BrowserRouter>
+          <Route path="/" exact component={main}/>
           <main className="form-signin">
             <Route path ="/signup/" exact component={signup}/>
             <Route path ="/login/" exact component={Login}/>
           </main>
           <Route path ="/workflow/" exact component={Workflow}/>
-          <Route path="/" exact component={()=> <Home user={this.state.user } key = {this.state.key}/> }/>
+          <Route path="/Home/" exact component={Home}/>
         </BrowserRouter>
       </div>
     );
