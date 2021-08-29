@@ -149,10 +149,7 @@ def publish(key):
     if user != None:
         if request.method == 'POST':
             file_data = request.get_json(force=True)
-            # print(file_data['node'])
-            # file_name = file_data["file_name"]
             file_name = file_data['fileId']
-            # print(user.username)
             owner = file_data['user']
             file_content = str(file_data["node"])
             file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
@@ -175,14 +172,13 @@ def publish(key):
             file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
             search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id).first()
             if search_file_by_id:
-                updated_file = search_file_by_id.update(dict(content=file_content))
+                delete_workflow(file_id)
                 db.session.commit()
-                return 'File content is updated', 200
-            else:
-                new_file = WorkflowModel(owner=owner, name=file_name, content=file_content, file_id=file_id)
-                db.session.add(new_file)
-                db.session.commit()
-                return 'File is put.', 201
+            
+            new_file = WorkflowModel(owner=owner, name=file_name, content=file_content, file_id=file_id)
+            db.session.add(new_file)
+            db.session.commit()
+            return 'File is put.', 201
 
         if request.method == 'GET':
             return render_template('upload.html')
@@ -242,9 +238,9 @@ def execute_file(file_id):
         json_content = json.dumps(ast.literal_eval(chosen_workflow.content))
         json_content = json.loads(json_content)
         sorted_order = dag_solver_flow(json_content)
-        for node in sorted_order:
-            job = q.enqueue(whatever, str(node))
-        return "Workflow runs successfully.", 200
+        # for node in sorted_order:
+        #     job = q.enqueue(whatever, str(node))
+        return json.dumps(sorted_order), 200
     else:
         abort(403, description="Not logged in")
 

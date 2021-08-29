@@ -135,7 +135,7 @@ const DnDFlow = () => {
       ).catch(
         err =>{
             window.alert("ERROR IN SAVED FILE")
-            console.log("ERROR IN SAVED FILE");
+            console.log(err);
         }
       )
     }
@@ -146,8 +146,8 @@ const DnDFlow = () => {
       }
       ).catch(
         err =>{
-            window.alert("ERROR In FILE")
-            console.log("ERROR IN FILE");
+            window.alert("ERROR IN FILE")
+            console.log(err);
         }
       ) 
     }
@@ -178,7 +178,7 @@ const DnDFlow = () => {
   const onExecute = () => {
     sendWorkflow();
     console.log("This is file id", fileID);
-    axios.get('http://localhost:5000/api/v1/workflow/execute/' + fileID).then(
+    axios.get('http://localhost:5000/api/v1/workflow/execute/' + `${sessionStorage.getItem('username')}-${fileID.toLowerCase()}`).then(
       res => {
         console.log(res);
       }
@@ -192,6 +192,7 @@ const DnDFlow = () => {
   if(sessionStorage.getItem('username')==null){
     window.location = "/login";
   }
+  
   const loggedIn = () =>{
     if(nodes!= null){
       return <div class = "navBar">
