@@ -6,6 +6,7 @@ import { Redirect } from 'react-router-dom';
 import mount from './home'
 import DnDFlow from './home';
 class workflow extends Component{
+
     state = {}
     createWork(){
         sessionStorage.setItem("content",null);
@@ -13,6 +14,7 @@ class workflow extends Component{
         sessionStorage.setItem("content-length",null)
         window.location = "/Home/";
     }
+
     workflowFiles(content, name, fileID, owner, data){
         // console.log(data);
         const displayID = (content,name)=>{
@@ -52,6 +54,7 @@ class workflow extends Component{
     getWorkflow = () => {
         axios.get('http://localhost:5000/api/v1/workflow/getOwner/'+sessionStorage.getItem('username')).then(
             res=>{
+                console.log(res.data)
                 const data = res['data']
                 // console.log(res['data'])
                 const content = res['data'][0]['content'];

@@ -214,6 +214,7 @@ def get_workflow(file_id):
     else:
         abort(403, description="Not logged in")
 
+
 @api_bp.route('/api/v1/workflow/getOwner/<owner>', methods=['GET'])
 def get_User_workflow(owner):
     if(True):
@@ -240,7 +241,8 @@ def execute_file(file_id):
         sorted_order = dag_solver_flow(json_content)
         # for node in sorted_order:
         #     job = q.enqueue(whatever, str(node))
-        return json.dumps(sorted_order), 200
+        job = q.enqueue(whatever, sorted_order)
+        return json.dumps(job), 200
     else:
         abort(403, description="Not logged in")
 
