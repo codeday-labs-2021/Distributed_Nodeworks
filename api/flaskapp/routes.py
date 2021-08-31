@@ -2,7 +2,7 @@ from flask import request, jsonify, abort, redirect, url_for, render_template, s
 from flaskapp import db, bcrypt, q, r
 from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel, workflow_schema, workflows_schema
 from flaskapp.dag_solver import dag_solver_flow
-from flaskapp.tasks import whatever
+from flaskapp.tasks import executor
 from flask_login import login_user, current_user, logout_user
 import ast
 import uuid
@@ -14,6 +14,8 @@ import time
 from rq import Worker, Queue, Connection
 from rq.command import send_kill_horse_command, send_shutdown_command
 from rq.worker import Worker, WorkerStatus
+import time
+from rq.job import Job
 
 api_bp = Blueprint("api", __name__)
 
@@ -241,16 +243,35 @@ def execute_file(file_id):
         sorted_order = dag_solver_flow(json_content)
         # for node in sorted_order:
         #     job = q.enqueue(whatever, str(node))
-        job = q.enqueue(whatever, sorted_order)
-        return json.dumps(job), 200
+        job = q.enqueue(executor, sorted_order, job_id=str(file_id))
+        return "Flow is executed", 200
     else:
         abort(403, description="Not logged in")
 
 
-@api_bp.route('/api/v1/workflow/execute/test_queue')
-def test_queue():
-    job = q.enqueue(whatever, "abcdefghijklmnop")
-    return json.dumps(f"Theres a job {job.id}, {len(q)} tasks right now.")
+@api_bp.route('/api/v1/workflow/execute/check/<file_id>')
+def check_status(file_id):
+    try:
+        job = Job.fetch(file_id, connection=r)
+    except Exception as exception:
+        abort(404, description=exception)
+    return json.dumps({"job_id": job.id, "job_status": job.get_status()})
+
+
+@api_bp.route('/api/v1/workflow/execute/get/<file_id>')
+def get_job_result(file_id):
+    try:
+        job = Job.fetch(file_id, connection=r)
+    except Exception as exception:
+        abort(404, description=exception)
+    
+    if not job.result:
+        abort(
+            404,
+            description=f"No result found for job_id {job.id}. Try checking the job's status.",
+        )
+    
+    return json.dumps(job.result)
 
 
 @api_bp.route('/api/v1/queue/clear')
@@ -261,14 +282,7 @@ def clear_queue():
 
 @api_bp.route('/api/v1/queue/status')
 def status_queue():
-    return json.dumps(f"There is {len(q)} tasks right now.")
-
-
-# the problem, no longer implemented
-# @api_bp.route('/api/v1/runners/register')
-# def register_runner():
-#     message = asyncio.run(run_worker())
-#     return "Runner has been registered and worked", 200    
+    return json.dumps(f"There is {len(q)} tasks right now.")  
 
 
 @api_bp.route('/api/v1/runners/status')
