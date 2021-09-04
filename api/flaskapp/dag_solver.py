@@ -43,13 +43,13 @@ def dag_solver(json_object):
 
         # construct that chosen node
         chosen_node = {     
-            "name": chosen_key, 
+            "id": chosen_key, 
             "in_neighbours": all_nodes[chosen_key]["in_neighbours"],
             "out_neighbours": all_nodes[chosen_key]["out_neighbours"]
         }
 
         # add it to the sorted nodes
-        sorted_nodes.append(json_object[chosen_node["name"]])
+        sorted_nodes.append(json_object[chosen_node["id"]])
 
         for node in chosen_node["out_neighbours"]:
             all_nodes[node]["in_neighbours"].remove(chosen_key)
@@ -80,7 +80,6 @@ def dag_solver_flow(json_object):
         if "source" in i: # check if the object is the connection
             input_node = i["source"]
             output_node = i["target"]
-
             # if input_node not in all_nodes:
             #     all_nodes[input_node] = {
             #         "in_neighbours" : [],
@@ -114,7 +113,7 @@ def dag_solver_flow(json_object):
 
         # construct that chosen node
         chosen_node = {     
-            "name": chosen_key, 
+            "id": chosen_key, 
             "in_neighbours": all_nodes[chosen_key]["in_neighbours"],
             "out_neighbours": all_nodes[chosen_key]["out_neighbours"],
             "type": all_nodes[chosen_key]["type"],

@@ -1,10 +1,11 @@
-import React, {Component} from 'react';
+import React, {Component, useEffect} from 'react';
 import axios from 'axios';
 import { render } from '@testing-library/react';
 import './workflow.css';
 import { Redirect } from 'react-router-dom';
 import mount from './home'
 import DnDFlow from './home';
+
 class workflow extends Component{
 
     state = {}
@@ -18,10 +19,19 @@ class workflow extends Component{
     workflowFiles(content, name, fileID, owner, data){
         // console.log(data);
         const displayID = (content,name)=>{
-            // console.log("CONTENT " +content);
-            let nodes = JSON.stringify(eval('('+content+')'));
+            console.log("CONTENT " + content);
+            if (content !== undefined)
+            {
+                console.log("content not undefined")
+            } else {
+                console.log("content undefined")
+            }
+            let nodes = content.replace(/'/g, '"');
+            console.log(nodes);
             let newname = name;
-            const numOfNodes=JSON.parse(nodes)
+            console.log("Hi 1")
+            const numOfNodes = JSON.parse(nodes);
+            console.log("Hi ");
             sessionStorage.setItem("content",nodes);
             sessionStorage.setItem("contentName",newname);
             sessionStorage.setItem("content-length",Object.keys(numOfNodes).length)
@@ -54,6 +64,7 @@ class workflow extends Component{
     getWorkflow = () => {
         axios.get('http://localhost:5000/api/v1/workflow/getOwner/'+sessionStorage.getItem('username')).then(
             res=>{
+                console.log("Data of flow: ")
                 console.log(res.data)
                 const data = res['data']
                 // console.log(res['data'])
@@ -63,7 +74,7 @@ class workflow extends Component{
                 const owner = res['data'][0]['owner']
                 const json = JSON.parse(JSON.stringify(content))
                 this.setState({
-                    workflow: this.workflowFiles(1,name,1,1,data)
+                    workflow: this.workflowFiles(name, content, fileID, owner, data)
                 })
                 // const test = JSON.parse(JSON.stringify(eval('('+content+')')))
                 // console.log(test)

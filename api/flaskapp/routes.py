@@ -170,8 +170,17 @@ def publish(key):
             file_data = request.get_json(force=True)
             file_name = file_data['fileId']
             owner = file_data['user']
+            print(file_data['node'])
+            file_content = []
+            for element in file_data['node']:
+                if 'sourceHandle' in element:
+                    del element['sourceHandle']
+                if 'targetHandle' in element:
+                    del element['targetHandle']
+                file_content.append(element)
             file_content = str(file_data['node'])
             file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
+
             search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id).first()
             if search_file_by_id:
                 delete_workflow(file_id)
@@ -192,6 +201,7 @@ def publish(key):
 def see_file(id):
     chosen_workflow = WorkflowModel.query.get(id)
     return workflow_schema.jsonify(chosen_workflow)
+
 
 @api_bp.route('/api/v1/workflow/seeAllfile', methods=['GET'])
 def see_All_file():
@@ -270,7 +280,6 @@ def get_job_result(file_id):
             404,
             description=f"No result found for job_id {job.id}. Try checking the job's status.",
         )
-    
     return json.dumps(job.result)
 
 

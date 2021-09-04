@@ -20,6 +20,21 @@ localforage.config({
   storeName: 'flows',
 });
 
+// custom Hook for automatic abortion on unmount or dependency change
+// You might add onFailure for promise errors as well.
+function useAsync(asyncFn, onSuccess) {
+  useEffect(() => {
+    let isActive = true;
+    asyncFn().then(data => {
+      if (isActive) onSuccess(data)
+      else console.log("aborted setState on unmounted component")
+    });
+    return () => {
+      isActive = false;
+    };
+  }, [asyncFn, onSuccess]);
+}
+
 const initBgColor = '#1A192B';
 
 const flowKey = 'example-flow';
@@ -128,7 +143,7 @@ const DnDFlow = () => {
     console.log(data)
     // HOW TO SAVE
     if(Save == true){
-      axios.post('http://localhost:5000/api/v1/workflow/publish/'+sessionStorage.getItem('token'),data).then(
+      axios.put('http://localhost:5000/api/v1/workflow/publish/'+sessionStorage.getItem('token'),data).then(
         res=>{
           console.log("HELLO posted" + res)
       }
@@ -187,6 +202,17 @@ const DnDFlow = () => {
         console.log(err);
       }
     )
+    console.log("----------------------------------------------")
+    axios.get('http://localhost:5000/api/v1/workflow/execute/get/' + `${sessionStorage.getItem('username')}-${fileID.toLowerCase()}`).then(
+      res => {
+        console.log(res);
+
+      }
+    ).catch(
+      err =>{
+        console.log(err);
+      }
+    )
   };
 
   if(sessionStorage.getItem('username')==null){
@@ -198,6 +224,7 @@ const DnDFlow = () => {
       return <div class = "navBar">
       <input class="fileName" ref = {fileID} placeholder="Type Filename" value = {name}></input>
       <div class = "navObjects">
+        <img src = "/./img/play-circle.svg" class= "navBtn" onClick={onExecute}></img>
         <img src = "/./img/save.svg" class= "navBtn" onClick={onSave}></img>
         <img src = "/./img/undo-alt.svg" class= "navBtn" onClick={onRestore}></img>
         <img src = "/./img/cloud-upload-alt.svg" class= "navBtn" onClick={sendWorkflow}></img>
