@@ -4,7 +4,7 @@ import { Handle } from 'react-flow-renderer';
 import './dnd.css';
 let letId = React.createRef()
 export default memo(({ data, isConnectable }) => {
-
+  
   const newInput = (e) => {
     console.log(e.target.value);
     data["content"] = e.target.value;
@@ -17,12 +17,11 @@ export default memo(({ data, isConnectable }) => {
         type="target"
         position="left"
         style={{ background: '#555' }}
-        // onConnect={(params) => console.log('handle onConnect as input node', params)}
         isConnectable={isConnectable}
       />
       
       <div className = "selector">
-        <input class = "selectorInput" placeholder = "Enter a number" onChange={newInput}/>
+        <input class = "selectorInput" placeholder = "Enter a number" onChange={newInput} defaultValue={data["content"]}/>
       </div>
 
       <Handle

@@ -26,6 +26,7 @@ const onConnect = (source,target) =>{
 }
 export default memo(({ data, isConnectable }) => {
   console.log("hdlfksdjf",data)
+  console.log(data["label"])
   return (
     <>
       <Handle
@@ -33,12 +34,13 @@ export default memo(({ data, isConnectable }) => {
         position="top"
         style={{ background: '#555' }}
         isConnectable = {isConnectable}
-        // isValidConnection={isValidConnection}
         onConnect={() => console.log("Hello neighbour.")}
       />
 
       <div className = "selector selector-Output">
-        <p id = "output">{data.label}</p>
+        <p id = "output">
+          {data.label}
+        </p>
       </div>
     </>
   );

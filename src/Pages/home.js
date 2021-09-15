@@ -20,21 +20,6 @@ localforage.config({
   storeName: 'flows',
 });
 
-// custom Hook for automatic abortion on unmount or dependency change
-// You might add onFailure for promise errors as well.
-function useAsync(asyncFn, onSuccess) {
-  useEffect(() => {
-    let isActive = true;
-    asyncFn().then(data => {
-      if (isActive) onSuccess(data)
-      else console.log("aborted setState on unmounted component")
-    });
-    return () => {
-      isActive = false;
-    };
-  }, [asyncFn, onSuccess]);
-}
-
 const initBgColor = '#1A192B';
 
 const flowKey = 'example-flow';
@@ -67,15 +52,6 @@ const DnDFlow = () => {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [elements, setElements] = useState(initialElements);
-
-  useEffect(() => {
-    console.log(elements);
-    if (elements.length > 2) {
-      if (elements[elements.length - 1].source !== undefined) {
-        console.log(elements[elements.length - 1]["source"]);
-      }
-    }
-  }, [elements]);
 
   const onConnect = (params) => setElements((els) => addEdge(params, els));
   const onElementsRemove = (elementsToRemove) =>
@@ -123,12 +99,17 @@ const DnDFlow = () => {
     // console.log(elements)
     let ele = JSON.stringify(elements)
     console.log(ele)
-    try{
+    try {
+      console.log("check id", fileID.current.value)
       fileID = fileID.current.value
     }
-    catch{
-      window.alert("ERROR",fileID)
-      return
+    catch(e) {
+      console.log(e)
+      if (fileID === null || fileID === '')
+      {
+        window.alert("Name cannot be empty")
+        return
+      }
     }
     const data={
       user: sessionStorage.getItem('username'),
@@ -166,16 +147,7 @@ const DnDFlow = () => {
         }
       ) 
     }
-    //HOW TO SAVE END
-    // axios.get('http://localhost:5000/api/v1/workflow/getOwner/'+localStorage.getItem('username')).then(
-    //   res=>{
-    //     console.log(res['data'].length)
-    // }
-    // ).catch(
-    //   err =>{
-    //       console.log(err);
-    //   }
-    // )
+
   }
   const onRestore = useCallback(() => {
     const restoreFlow = async () => {
@@ -190,29 +162,26 @@ const DnDFlow = () => {
     restoreFlow();
   }, [setElements]);
 
-  const onExecute = () => {
-    sendWorkflow();
+  async function onExecute() {
+    sendWorkflow(); // save first, for safety net
     console.log("This is file id", fileID);
-    axios.get('http://localhost:5000/api/v1/workflow/execute/' + `${sessionStorage.getItem('username')}-${fileID.toLowerCase()}`).then(
-      res => {
-        console.log(res);
-      }
-    ).catch(
-      err =>{
-        console.log(err);
-      }
-    )
-    console.log("----------------------------------------------")
-    axios.get('http://localhost:5000/api/v1/workflow/execute/get/' + `${sessionStorage.getItem('username')}-${fileID.toLowerCase()}`).then(
-      res => {
-        console.log(res);
 
-      }
-    ).catch(
-      err =>{
-        console.log(err);
-      }
-    )
+    // execute the workflow from the backend
+    let response = await axios.get('http://localhost:5000/api/v1/workflow/execute/' + `${sessionStorage.getItem('username')}-${fileID.toLowerCase()}`)
+    if (response.status !== 200) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    } 
+    console.log(response);
+    // then return back the node
+    console.log("----------------------------------------------")
+    let result = await axios.get('http://localhost:5000/api/v1/workflow/execute/get/'  + `${sessionStorage.getItem('username')}-${fileID.toLowerCase()}`)
+    if (result.status !== 200) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+      setElements(result.data);
+    }
+    console.log(result.data);
+    console.log(elements);
   };
 
   if(sessionStorage.getItem('username')==null){

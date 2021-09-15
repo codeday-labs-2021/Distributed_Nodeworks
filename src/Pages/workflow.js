@@ -28,8 +28,8 @@ class workflow extends Component{
             }
             let nodes = content.replace(/'/g, '"');
             console.log(nodes);
+            
             let newname = name;
-            console.log("Hi 1")
             const numOfNodes = JSON.parse(nodes);
             console.log("Hi ");
             sessionStorage.setItem("content",nodes);

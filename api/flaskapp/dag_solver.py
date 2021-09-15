@@ -65,6 +65,7 @@ def dag_solver_flow(json_object):
     all_nodes = {}
     independent_nodes = {}
     sorted_nodes = []
+    edges = []
 
     for i in json_object:
         if "type" in i:
@@ -75,25 +76,15 @@ def dag_solver_flow(json_object):
                 "in_neighbours" : [],
                 "out_neighbours" : []
             }
+        if "source" in i:
+            edges.append(i)
     print(json_object)
     for i in json_object:
         if "source" in i: # check if the object is the connection
             input_node = i["source"]
             output_node = i["target"]
-            # if input_node not in all_nodes:
-            #     all_nodes[input_node] = {
-            #         "in_neighbours" : [],
-            #         "out_neighbours" : [output_node]
-            #     }
-            # else: # if node is already in the dictionary, then it's also the input node of another node, so update this node's out neighbour
+        
             all_nodes[input_node]["out_neighbours"].append(output_node)
-            
-            # if output_node not in all_nodes:
-            #     all_nodes[output_node] = {
-            #         "in_neighbours" : [input_node],
-            #         "out_neighbours" : []
-            #     }
-            # else:
             all_nodes[output_node]["in_neighbours"].append(input_node)
         
     print(all_nodes)
@@ -134,4 +125,5 @@ def dag_solver_flow(json_object):
                 "in_neighbours" : all_nodes[node]["in_neighbours"],
                 "out_neighbours" : all_nodes[node]["out_neighbours"]
             }
+    sorted_nodes += edges
     return sorted_nodes

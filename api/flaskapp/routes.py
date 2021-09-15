@@ -2,7 +2,7 @@ from flask import request, jsonify, abort, redirect, url_for, render_template, s
 from flaskapp import db, bcrypt, q, r
 from flaskapp.models import UserModel, user_schema, users_schema, WorkflowModel, workflow_schema, workflows_schema
 from flaskapp.dag_solver import dag_solver_flow
-from flaskapp.tasks import executor
+from flaskapp.tasks import executor, report_result
 from flask_login import login_user, current_user, logout_user
 import ast
 import uuid
@@ -171,6 +171,7 @@ def publish(key):
             file_name = file_data['fileId']
             owner = file_data['user']
             print(file_data['node'])
+            file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
             file_content = []
             for element in file_data['node']:
                 if 'sourceHandle' in element:
@@ -179,7 +180,6 @@ def publish(key):
                     del element['targetHandle']
                 file_content.append(element)
             file_content = str(file_data['node'])
-            file_id = owner.lower().replace(" ", "-") + "-" + file_name.lower().strip(" _")
 
             search_file_by_id = WorkflowModel.query.filter_by(file_id=file_id).first()
             if search_file_by_id:
@@ -251,9 +251,7 @@ def execute_file(file_id):
         json_content = json.dumps(ast.literal_eval(chosen_workflow.content))
         json_content = json.loads(json_content)
         sorted_order = dag_solver_flow(json_content)
-        # for node in sorted_order:
-        #     job = q.enqueue(whatever, str(node))
-        job = q.enqueue(executor, sorted_order, job_id=str(file_id))
+        job = q.enqueue(executor, sorted_order, job_id=str(file_id), on_success=report_result)
         return "Flow is executed", 200
     else:
         abort(403, description="Not logged in")
